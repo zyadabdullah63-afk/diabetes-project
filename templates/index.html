@@ -1,1 +1,2562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <title>Diabetes AI | Advanced Medical Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: linear-gradient(135deg, #f8faff 0%, #eef2ff 100%);
+            --white: #ffffff;
+            --heading: #0a1c3a;
+            --text: #334155;
+            --text-light: #5a6e8a;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #60a5fa;
+            --primary-soft: rgba(37,99,235,0.12);
+            --primary-glow: rgba(37,99,235,0.3);
+            --accent-light: #eff6ff;
+            --border: #e0e7ff;
+            --border-light: #eef2ff;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 30px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+            --shadow-xl: 0 25px 50px -12px rgba(0,0,0,0.15);
+            --red: #dc2626;
+            --red-dark: #b91c1c;
+            --red-soft: #fef2f2;
+            --red-light: #fee2e2;
+            --green: #059669;
+            --green-light: #ecfdf5;
+            --green-soft: #d1fae5;
+            --emerald: #10b981;
+            --gold: #d97706;
+            --gold-light: #fffbeb;
+            --purple: #7c3aed;
+            --purple-light: #f5f3ff;
+            --orange: #ea580c;
+            --orange-light: #fff7ed;
+            --teal: #0d9488;
+            --teal-light: #f0fdfa;
+            --pink: #db2777;
+            --pink-light: #fdf2f8;
+            --footer-bg: #f1f5f9;
+            --gradient-primary: linear-gradient(135deg, #2563eb 0%, #1e40af 30%, #3b82f6 70%, #60a5fa 100%);
+            --gradient-hero: radial-gradient(ellipse at 30% 40%, rgba(37,99,235,0.15) 0%, transparent 60%);
+            --gradient-sunrise: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            --gradient-forest: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            --gradient-ocean: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+            --gradient-berry: linear-gradient(135deg, #db2777 0%, #8b5cf6 100%);
+            --card-radius: 24px;
+            --transition: all 0.4s cubic-bezier(0.2, 0.95, 0.4, 1.05);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--border-light); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+        
+        .bg-glow {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-glow::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(ellipse, rgba(37,99,235,0.08) 0%, transparent 70%);
+            animation: floatGlow 20s ease-in-out infinite;
+        }
+        .bg-glow::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            right: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(ellipse, rgba(5,150,105,0.04) 0%, transparent 70%);
+            animation: floatGlow 25s ease-in-out infinite reverse;
+        }
+        @keyframes floatGlow {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            50% { transform: translate(3%, 3%) scale(1.05); opacity: 1; }
+        }
+        
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(37,99,235,0.15);
+            transition: var(--transition);
+        }
+        nav.scrolled {
+            padding: 0.7rem 2rem;
+            background: rgba(255,255,255,0.98);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.35rem;
+            font-weight: 800;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+        .nav-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--heading); }
+        
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            z-index: 1001;
+            transition: width 0.1s;
+            box-shadow: 0 0 10px var(--primary);
+        }
+        
+        .hero {
+            position: relative;
+            min-height: 95vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-hero);
+            pointer-events: none;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(37,99,235,0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(37,99,235,0.25);
+            color: var(--primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            animation: fadeUp 0.6s ease;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 7vw, 5rem);
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--heading);
+            animation: fadeUp 0.6s 0.1s ease both;
+        }
+        .hero-gradient-text {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--primary-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(37,99,235,0.3);
+        }
+        .hero-sub {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 550px;
+            margin: 1.5rem auto 2rem;
+            line-height: 1.8;
+            animation: fadeUp 0.6s 0.2s ease both;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+            animation: fadeUp 0.6s 0.3s ease both;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(37,99,235,0.2);
+            border-radius: 20px;
+            padding: 0.8rem 1.5rem;
+            transition: var(--transition);
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 0 25px var(--primary-glow);
+        }
+        .stat-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: help;
+            border-bottom: 1px dotted var(--primary);
+        }
+        .stat-label { font-size: 0.7rem; color: var(--text-light); }
+        .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.6s 0.4s ease both; }
+        .btn-primary {
+            padding: 0.9rem 2rem;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 0 20px rgba(37,99,235,0.4);
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 35px rgba(37,99,235,0.6); }
+        .btn-outline {
+            padding: 0.9rem 2rem;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(37,99,235,0.3);
+            border-radius: 40px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-outline:hover { border-color: var(--primary); background: var(--primary-soft); box-shadow: 0 0 20px var(--primary-glow); }
+        
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            margin-bottom: 1rem;
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            color: var(--heading);
+            line-height: 1.3;
+        }
+        .section-subtitle { color: var(--text-light); max-width: 600px; margin: 1rem auto 0; font-size: 1rem; }
+        
+        .stats-chart-section {
+            background: linear-gradient(135deg, var(--white) 0%, var(--accent-light) 100%);
+            border-radius: 32px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(37,99,235,0.15);
+        }
+        .chart-container { max-width: 500px; margin: 0 auto; position: relative; }
+        .chart-numbers { display: flex; justify-content: center; gap: 3rem; margin-top: 1.5rem; flex-wrap: wrap; }
+        .chart-stat { text-align: center; }
+        .chart-stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            cursor: help;
+            border-bottom: 1px dotted var(--primary);
+        }
+        .chart-stat-value.diabetic-stat { color: var(--red); }
+        .chart-stat-value.healthy-stat { color: var(--green); }
+        .chart-stat-label { font-size: 0.8rem; color: var(--text-light); }
+        
+        .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+        .overview-text p { color: var(--text); line-height: 1.8; margin-bottom: 1rem; }
+        .highlight-blue { 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+        .highlight-red { color: var(--red); font-weight: 700; }
+        
+        .visual-card {
+            background: linear-gradient(135deg, var(--white) 0%, rgba(37,99,235,0.05) 100%);
+            border-radius: 32px;
+            padding: 2rem;
+            border: 1px solid rgba(37,99,235,0.2);
+            box-shadow: 0 0 30px rgba(37,99,235,0.1);
+        }
+        .glucose-visual { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+        .glucose-meter { width: 100%; background: rgba(255,255,255,0.5); border-radius: 60px; padding: 1rem; }
+        .meter-bar { height: 12px; background: linear-gradient(90deg, var(--green), var(--gold), var(--red)); border-radius: 10px; width: 70%; position: relative; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .meter-marker { position: absolute; top: -8px; width: 4px; height: 28px; background: var(--heading); border-radius: 2px; }
+        
+        .types-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.8rem; }
+        .type-card {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            border-radius: var(--card-radius);
+            padding: 2rem;
+            transition: var(--transition);
+            border: 1px solid rgba(37,99,235,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .type-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        .type-card:hover::before { transform: scaleX(1); }
+        .type-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: 0 0 30px var(--primary-glow); }
+        .type-icon { width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 1.2rem; }
+        .type-icon.t1 { background: var(--red-soft); color: var(--red); }
+        .type-icon.t2 { background: rgba(37,99,235,0.15); color: var(--primary); }
+        .type-icon.t3 { background: var(--gold-light); color: var(--gold); }
+        .type-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--heading); }
+        .type-card p { color: var(--text-light); font-size: 0.88rem; line-height: 1.7; margin-bottom: 1rem; }
+        .type-badge { display: inline-block; padding: 0.25rem 0.8rem; border-radius: 40px; font-size: 0.7rem; font-weight: 700; }
+        .badge-red { background: var(--red-soft); color: var(--red); }
+        .badge-blue { background: rgba(37,99,235,0.15); color: var(--primary); }
+        .badge-gold { background: var(--gold-light); color: var(--gold); }
+        
+        .diag-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+        .diag-card {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(37,99,235,0.15);
+        }
+        .diag-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 0 25px var(--primary-glow); }
+        .diag-icon { font-size: 2.2rem; margin-bottom: 0.8rem; }
+        .diag-card h4 { font-weight: 700; margin-bottom: 0.5rem; color: var(--heading); }
+        .diag-value { font-size: 1.2rem; font-weight: 800; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0.5rem 0; }
+        .diag-range { font-size: 0.75rem; color: var(--text-light); line-height: 1.6; }
+        .diag-danger { color: var(--red); font-weight: 700; }
+        
+        .form-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 32px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(37,99,235,0.2);
+        }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
+        .input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .input-group label { font-size: 0.8rem; font-weight: 600; color: var(--heading); display: flex; align-items: center; gap: 0.5rem; }
+        .input-group input { padding: 0.9rem 1rem; border: 1.5px solid rgba(37,99,235,0.2); border-radius: 14px; font-family: 'Inter', sans-serif; font-size: 0.95rem; transition: var(--transition); background: rgba(255,255,255,0.9); }
+        .input-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
+        .input-group input.input-warn { border-color: #d97706; box-shadow: 0 0 10px rgba(217,119,6,0.25); }
+        .input-group input.input-danger { border-color: #dc2626; box-shadow: 0 0 10px rgba(220,38,38,0.25); }
+        .input-group input:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; border-color: #e2e8f0; }
+        .field-hint { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.3rem; }
+        .hint-range { font-size:0.67rem; color:var(--text-light); background:#f1f5f9; padding:0.18rem 0.5rem; border-radius:20px; display:flex; align-items:center; gap:0.25rem; }
+        .hint-normal { font-size:0.67rem; color:#059669; background:#ecfdf5; padding:0.18rem 0.5rem; border-radius:20px; display:flex; align-items:center; gap:0.25rem; font-weight:600; }
+        .field-error { font-size:0.72rem; color:#dc2626; margin-top:0.25rem; min-height:1rem; display:flex; align-items:center; gap:0.3rem; font-weight:500; }
+        .field-warn-msg { font-size:0.72rem; color:#d97706; margin-top:0.25rem; min-height:1rem; display:flex; align-items:center; gap:0.3rem; font-weight:500; }
+        
+        .result-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 32px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            animation: slideUp 0.5s ease;
+            border: 1px solid rgba(37,99,235,0.2);
+        }
+        .result-card.show { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .result-diabetic { border-left: 4px solid var(--red); }
+        .result-healthy { border-left: 4px solid var(--green); }
+        .result-status { font-size: 1.4rem; font-weight: 800; }
+        .result-status.diabetic { color: var(--red); }
+        .result-status.healthy { color: var(--green); }
+        .confidence-bar { width: 100%; height: 10px; background: var(--border-light); border-radius: 10px; margin: 1rem 0; overflow: hidden; }
+        .confidence-fill { height: 100%; border-radius: 10px; transition: width 1s ease; }
+        .fill-high { background: linear-gradient(90deg, var(--red), #ef4444); box-shadow: 0 0 10px var(--red); }
+        .fill-medium { background: linear-gradient(90deg, var(--gold), #f59e0b); }
+        .fill-low { background: linear-gradient(90deg, var(--green), #10b981); }
+        
+        .result-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+        .result-stat { background: rgba(248,250,255,0.8); padding: 1rem; border-radius: 18px; text-align: center; }
+        .result-stat-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-light); letter-spacing: 1px; }
+        .result-stat-value { font-size: 1.4rem; font-weight: 800; color: var(--heading); margin-top: 0.3rem; }
+        
+        .prevention-enhanced {
+            margin-top: 2rem;
+            border-radius: 32px;
+            overflow: hidden;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.2); }
+            50% { box-shadow: 0 0 0 8px rgba(37,99,235,0.1); }
+        }
+        .prevention-header {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #db2777 100%);
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+        .prevention-header-icon { font-size: 3rem; margin-bottom: 0.5rem; animation: bounce 1s ease infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .prevention-header h3 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .prevention-header p { font-size: 0.9rem; opacity: 0.95; }
+        
+        .prevention-grid-modern {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #fef2f2 0%, #fffbeb 50%, #ecfdf5 100%);
+        }
+        .prevention-card {
+            background: white;
+            border-radius: 24px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.2, 0.95, 0.4, 1.05);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        .prevention-card::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2563eb, #7c3aed, #db2777);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        .prevention-card:hover::before { transform: scaleX(1); }
+        .prevention-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        .prevention-emoji { font-size: 3rem; margin-bottom: 1rem; display: inline-block; }
+        .prevention-card h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--heading); }
+        .prevention-card p { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
+        
+        .motivation-quote {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 1.5rem;
+            margin: 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid #fcd34d;
+        }
+        .motivation-quote i { font-size: 2rem; color: #d97706; margin-bottom: 0.5rem; }
+        .motivation-quote p { font-size: 1rem; font-weight: 600; color: #92400e; font-style: italic; }
+        .motivation-quote small { display: block; margin-top: 0.5rem; color: #b45309; }
+        
+        .tracker-row {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            padding: 1rem 2rem 2rem;
+            background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+        }
+        .tracker-badge {
+            background: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 60px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .tracker-badge i { font-size: 1.2rem; }
+        .tracker-badge.glucose { border-left: 4px solid #ef4444; }
+        .tracker-badge.exercise { border-left: 4px solid #10b981; }
+        .tracker-badge.diet { border-left: 4px solid #f59e0b; }
+        
+        .nutrition-wrapper {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-radius: 32px;
+            padding: 2rem;
+        }
+        .food-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .food-column h4 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; padding: 0.7rem 1rem; border-radius: 12px; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .food-allowed h4 { background: var(--green-light); color: var(--green); }
+        .food-avoid h4 { background: var(--red-soft); color: var(--red); }
+        .food-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+        .food-list li { background: rgba(255,255,255,0.9); padding: 0.7rem 1rem; border-radius: 12px; display: flex; align-items: center; gap: 0.7rem; font-size: 0.85rem; transition: var(--transition); }
+        .food-list li:hover { transform: translateX(5px); box-shadow: 0 0 10px rgba(37,99,235,0.2); }
+        
+        .myths-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .myth-card {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: var(--transition);
+            border: 1px solid rgba(37,99,235,0.15);
+        }
+        .myth-card:hover { transform: translateY(-5px); box-shadow: 0 0 25px var(--primary-glow); }
+        .myth-badge { font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 0.8rem; display: inline-block; padding: 0.2rem 0.8rem; border-radius: 40px; }
+        .myth-badge.myth { background: var(--red-soft); color: var(--red); }
+        .myth-badge.fact { background: var(--green-light); color: var(--green); }
+        .myth-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--heading); }
+        .myth-card p { font-size: 0.83rem; color: var(--text-light); line-height: 1.65; }
+        
+        .demo-badge { margin-top: 1rem; padding: 0.7rem; background: var(--gold-light); border-radius: 12px; font-size: 0.75rem; color: var(--gold); text-align: center; }
+        
+        footer {
+            background: var(--footer-bg);
+            border-top: 1px solid var(--border-light);
+            padding: 3rem 2rem 2rem;
+            margin-top: 2rem;
+        }
+        .footer-grid { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem; }
+        .footer-logo { font-size: 1.4rem; font-weight: 700; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
+        .footer-col h5 { font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; color: var(--heading); }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 0.5rem; }
+        .footer-col a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .footer-col a:hover { color: var(--primary); text-shadow: 0 0 5px var(--primary-glow); }
+        .footer-bottom { max-width: 1300px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid var(--border-light); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: 0.75rem; color: var(--text-light); }
+        .disclaimer { max-width: 1300px; margin: 1.5rem auto 0; padding: 1rem; background: var(--gold-light); border-radius: 16px; font-size: 0.75rem; color: var(--text-light); text-align: center; }
+        
+        #back-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            cursor: pointer;
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 100;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+        #back-top.visible { opacity: 1; }
+        #back-top:hover { transform: translateY(-3px); box-shadow: 0 0 30px var(--primary-glow); }
+        
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .nav-toggle { display: block; }
+            .overview-grid { grid-template-columns: 1fr; }
+            .food-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .result-stats { grid-template-columns: 1fr; }
+            section { padding: 3rem 1.2rem; }
+            .form-card { padding: 1.5rem; }
+        }
+        @media (max-width: 600px) {
+            .hero { padding: 6rem 1rem 3rem; }
+            .hero-stats { gap: 0.8rem; }
+            .stat-card { padding: 0.5rem 1rem; }
+            .stat-number { font-size: 1.2rem; }
+            .btn-primary, .btn-outline { width: 100%; justify-content: center; }
+            .prevention-grid-modern { grid-template-columns: 1fr; }
+        }
+        
+        /* Style for source tooltip */
+        [data-source] {
+            cursor: help;
+            border-bottom: 1px dotted var(--primary);
+            transition: all 0.2s ease;
+        }
+        [data-source]:hover {
+            background-color: rgba(37,99,235,0.1);
+            border-radius: 4px;
+        }
 
+        /* ── References Section ── */
+        .references-section {
+            background: linear-gradient(135deg, #f8faff 0%, #eef2ff 100%);
+            border-top: 2px solid rgba(37,99,235,0.12);
+            padding: 4rem 2rem 3rem;
+        }
+        .references-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .references-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(37,99,235,0.15);
+        }
+        .references-header-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+        .references-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--heading);
+        }
+        .references-header p {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            margin-top: 0.2rem;
+        }
+        .ref-category {
+            margin-bottom: 2.5rem;
+        }
+        .ref-category-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--primary);
+            background: var(--primary-soft);
+            padding: 0.35rem 1rem;
+            border-radius: 40px;
+            margin-bottom: 1.2rem;
+        }
+        .ref-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+        .ref-item {
+            background: white;
+            border: 1px solid rgba(37,99,235,0.12);
+            border-radius: 14px;
+            padding: 1rem 1.4rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            transition: var(--transition);
+        }
+        .ref-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 20px rgba(37,99,235,0.1);
+            transform: translateX(4px);
+        }
+        .ref-number {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .ref-content {
+            flex: 1;
+        }
+        .ref-citation {
+            font-size: 0.84rem;
+            color: var(--text);
+            line-height: 1.65;
+        }
+        .ref-citation strong {
+            color: var(--heading);
+        }
+        .ref-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.75rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 0.4rem;
+            padding: 0.25rem 0.7rem;
+            background: var(--primary-soft);
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        .ref-link:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .ref-doi {
+            font-size: 0.73rem;
+            color: var(--text-light);
+            margin-top: 0.3rem;
+            font-family: monospace;
+        }
+        .ref-note {
+            background: var(--gold-light);
+            border: 1px solid #fcd34d;
+            border-radius: 12px;
+            padding: 0.9rem 1.2rem;
+            font-size: 0.78rem;
+            color: #92400e;
+            margin-top: 2rem;
+            display: flex;
+            gap: 0.6rem;
+            align-items: flex-start;
+        }
+        @media (max-width: 600px) {
+            .references-section { padding: 3rem 1.2rem 2rem; }
+            .ref-item { flex-direction: column; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div id="progress-bar"></div>
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
+
+<nav id="mainNav">
+    <div class="nav-container">
+        <div class="nav-logo">
+            <div class="nav-logo-icon"><i class="fas fa-heartbeat"></i></div>
+            <span>Diabetes<span style="color:var(--primary-light)">AI</span></span>
+        </div>
+        <ul class="nav-links">
+            <li><a onclick="scrollToSection('overview')">Overview</a></li>
+            <li><a onclick="scrollToSection('types')">Types</a></li>
+            <li><a onclick="scrollToSection('diagnosis')">Diagnosis</a></li>
+            <li><a onclick="scrollToSection('ai-diagnosis')">AI Analysis</a></li>
+            <li><a onclick="scrollToSection('nutrition')">Nutrition</a></li>
+            <li><a onclick="scrollToSection('myths')">Myths</a></li>
+        </ul>
+        <div id="navAuth" style="display:flex;align-items:center;gap:0.6rem;"></div>
+        <button class="nav-toggle" onclick="toggleMobileNav()"><i class="fas fa-bars"></i></button>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-badge">
+        <i class="fas fa-microchip"></i> AI-Powered Medical Intelligence
+    </div>
+    <h1>Understanding<br><span class="hero-gradient-text">Diabetes</span></h1>
+    <p class="hero-sub">Advanced AI diagnosis system combining classification & regression for accurate health predictions</p>
+    <div class="hero-stats">
+        <div class="stat-card">
+            <span class="stat-number" 
+                  data-source="International Diabetes Federation (IDF) Diabetes Atlas, 11th Edition (2025) — Global estimate of adults (20-79 years) living with diabetes" 
+                  data-link="https://diabetesatlas.org/">537M+</span>
+            <div class="stat-label">People affected</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number" 
+                  data-source="International Diabetes Federation (IDF) — Estimated deaths attributable to diabetes in adults (2021)" 
+                  data-link="https://idf.org/">6.7M</span>
+            <div class="stat-label">Annual Deaths</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number" 
+                  data-source="Based on published studies using PIMA dataset (Random Forest / XGBoost achieve 98-99% accuracy in some peer-reviewed research)" 
+                  data-link="https://www.sciencedirect.com/science/article/pii/S0010482525000636">99%</span>
+            <div class="stat-label">AI Accuracy</div>
+        </div>
+    </div>
+    <div class="hero-cta">
+        <button class="btn-primary" onclick="scrollToSection('ai-diagnosis')"><i class="fas fa-stethoscope"></i> AI Diagnosis</button>
+        <button class="btn-outline" onclick="scrollToSection('overview')"><i class="fas fa-book-open"></i> Learn More</button>
+    </div>
+</section>
+
+<!-- Overview Section -->
+<section id="overview">
+    <div class="section-header">
+        <span class="section-tag">THE BASICS</span>
+        <h2 class="section-title">What Is <span class="highlight-blue">Diabetes</span>?</h2>
+        <p class="section-subtitle">Understanding the metabolic condition affecting millions worldwide</p>
+    </div>
+    <div class="overview-grid reveal">
+        <div class="overview-text">
+            <p><span class="highlight-blue">Diabetes mellitus</span> is a chronic metabolic disease characterized by <span class="highlight-red">high blood glucose levels</span>, resulting from defects in <span class="highlight-blue">insulin secretion</span>, <span class="highlight-blue">insulin action</span>, or both.</p>
+            <p><span class="highlight-blue">Insulin</span> is a hormone produced by beta cells in the <span class="highlight-blue">pancreas</span>. It acts as a "key" that unlocks cells, allowing <span class="highlight-red">glucose</span> to enter and be converted into <span class="highlight-blue">energy</span>.</p>
+            <p>When the body cannot produce enough <span class="highlight-blue">insulin</span> or use it effectively, <span class="highlight-red">glucose accumulates in the bloodstream</span>, progressively damaging <span class="highlight-red">blood vessels, nerves, and vital organs</span>.</p>
+            <p>With proper treatment, people with diabetes can live <span class="highlight-blue">fully normal, healthy lives</span>.</p>
+        </div>
+        <div class="visual-card">
+            <div class="glucose-visual">
+                <div style="text-align: center;">
+                    <i class="fas fa-tachometer-alt" style="font-size: 2rem; color: var(--primary);"></i>
+                    <h4 style="margin-top: 0.5rem;">Glucose Level</h4>
+                </div>
+                <div class="glucose-meter">
+                    <div class="meter-bar">
+                        <div class="meter-marker" style="left: 40%;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.7rem;">
+                        <span>Normal</span><span>Prediabetes</span><span>Diabetes</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
+                    <div style="text-align: center;"><i class="fas fa-tint"></i><div style="font-size: 0.7rem;">Glucose</div></div>
+                    <div style="text-align: center;"><i class="fas fa-syringe"></i><div style="font-size: 0.7rem;">Insulin</div></div>
+                    <div style="text-align: center;"><i class="fas fa-heart"></i><div style="font-size: 0.7rem;">Health</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Types Section -->
+<section id="types">
+    <div class="section-header">
+        <span class="section-tag">CLASSIFICATION</span>
+        <h2 class="section-title">Types of <span class="highlight-blue">Diabetes</span></h2>
+        <p class="section-subtitle">Each type has distinct causes, mechanisms, and treatment approaches — click any card to learn more</p>
+    </div>
+    <div class="types-grid reveal">
+
+        <!-- Type 1 -->
+        <div class="type-card type-card-expand" onclick="toggleTypeCard('t1card')">
+            <div class="type-card-header">
+                <div class="type-icon t1"><i class="fas fa-dna"></i></div>
+                <div style="flex:1;">
+                    <h3>Type 1 Diabetes</h3>
+                    <span class="type-badge badge-red">~10% of cases</span>
+                </div>
+                <i class="fas fa-chevron-down type-chevron" id="chev-t1card"></i>
+            </div>
+            <p>An <span class="highlight-red">autoimmune disease</span> where the immune system attacks pancreatic beta cells, completely halting <span class="highlight-blue">insulin production</span>. Requires lifelong insulin therapy.</p>
+
+            <div class="type-expand-body" id="t1card">
+                <div class="type-expand-inner">
+                    <div class="type-qa-title"><i class="fas fa-question-circle"></i> Common Questions</div>
+                    <div class="type-qa-list">
+                        <div class="type-qa-item">
+                            <div class="type-q">Can Type 1 diabetes be prevented?</div>
+                            <div class="type-a">No. Type 1 is an autoimmune condition — the immune system destroys insulin-producing cells. It is not caused by diet or lifestyle and currently cannot be prevented.</div>
+                        </div>
+                        <div class="type-qa-item">
+                            <div class="type-q">What is the main treatment for Type 1?</div>
+                            <div class="type-a">Lifelong insulin therapy — either through multiple daily injections or a continuous insulin pump. Regular blood glucose monitoring is also essential.</div>
+                        </div>
+                        <div class="type-qa-item">
+                            <div class="type-q">Can people with Type 1 live a normal life?</div>
+                            <div class="type-a">Absolutely. With proper insulin management, blood sugar monitoring, and a healthy lifestyle, people with Type 1 diabetes can live full, active, and long lives.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Type 2 -->
+        <div class="type-card type-card-expand" onclick="toggleTypeCard('t2card')">
+            <div class="type-card-header">
+                <div class="type-icon t2"><i class="fas fa-weight-scale"></i></div>
+                <div style="flex:1;">
+                    <h3>Type 2 Diabetes</h3>
+                    <span class="type-badge badge-blue">~90% of cases</span>
+                </div>
+                <i class="fas fa-chevron-down type-chevron" id="chev-t2card"></i>
+            </div>
+            <p>Characterized by <span class="highlight-blue">insulin resistance</span> combined with progressive secretion failure. Strongly linked to <span class="highlight-red">lifestyle and obesity</span> — largely preventable.</p>
+
+            <div class="type-expand-body" id="t2card">
+                <div class="type-expand-inner">
+                    <div class="type-qa-title"><i class="fas fa-question-circle"></i> Common Questions</div>
+                    <div class="type-qa-list">
+                        <div class="type-qa-item">
+                            <div class="type-q">Can Type 2 diabetes be reversed?</div>
+                            <div class="type-a">In many cases, yes. Losing 10–15% of body weight through diet and exercise can lead to full remission, especially when caught early. It requires sustained lifestyle changes.</div>
+                        </div>
+                        <div class="type-qa-item">
+                            <div class="type-q">What are the main risk factors?</div>
+                            <div class="type-a">Obesity, physical inactivity, poor diet, age over 45, family history of diabetes, and high blood pressure are the leading risk factors for developing Type 2 diabetes.</div>
+                        </div>
+                        <div class="type-qa-item">
+                            <div class="type-q">Does Type 2 always require medication?</div>
+                            <div class="type-a">Not always. Many people manage Type 2 diabetes through diet and exercise alone. However, some require oral medications or insulin as the condition progresses over time.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gestational -->
+        <div class="type-card type-card-expand" onclick="toggleTypeCard('t3card')">
+            <div class="type-card-header">
+                <div class="type-icon t3"><i class="fas fa-baby-carriage"></i></div>
+                <div style="flex:1;">
+                    <h3>Gestational Diabetes</h3>
+                    <span class="type-badge badge-gold">2–10% of pregnancies</span>
+                </div>
+                <i class="fas fa-chevron-down type-chevron" id="chev-t3card"></i>
+            </div>
+            <p>Develops during <span class="highlight-blue">pregnancy</span> and usually resolves after delivery. Increases risk of <span class="highlight-red">Type 2 diabetes</span> later in life by ~50%.</p>
+
+            <div class="type-expand-body" id="t3card">
+                <div class="type-expand-inner">
+                    <div class="type-qa-title"><i class="fas fa-question-circle"></i> Common Questions</div>
+                    <div class="type-qa-list">
+                        <div class="type-qa-item">
+                            <div class="type-q">Does gestational diabetes harm the baby?</div>
+                            <div class="type-a">If uncontrolled, it can cause the baby to grow too large, leading to delivery complications. With proper management, most women with gestational diabetes have healthy pregnancies and babies.</div>
+                        </div>
+                        <div class="type-qa-item">
+                            <div class="type-q">Does it go away after delivery?</div>
+                            <div class="type-a">Usually yes — blood sugar typically returns to normal after birth. However, it significantly increases the mother's risk of developing Type 2 diabetes later in life.</div>
+                        </div>
+                        <div class="type-qa-item">
+                            <div class="type-q">How is gestational diabetes treated?</div>
+                            <div class="type-a">Through careful meal planning, physical activity, and blood glucose monitoring. Some women may also need insulin injections if diet and exercise alone are not sufficient to control blood sugar.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Diagnosis Section -->
+<section id="diagnosis">
+    <div class="section-header">
+        <span class="section-tag">LAB DIAGNOSIS</span>
+        <h2 class="section-title">How Is <span class="highlight-blue">Diabetes</span> Diagnosed?</h2>
+        <p class="section-subtitle">American Diabetes Association (ADA) diagnostic criteria</p>
+    </div>
+    <div class="diag-grid reveal">
+        <div class="diag-card">
+            <div class="diag-icon"><i class="fas fa-tint"></i></div>
+            <h4>Fasting Plasma Glucose</h4>
+            <div class="diag-value">FPG</div>
+            <div class="diag-range">Normal: &lt;100<br>Prediabetes: 100-125<br><span class="diag-danger">Diabetes: 126+ mg/dL</span></div>
+        </div>
+        <div class="diag-card">
+            <div class="diag-icon"><i class="fas fa-hourglass-half"></i></div>
+            <h4>Oral Glucose Tolerance</h4>
+            <div class="diag-value">OGTT</div>
+            <div class="diag-range">Normal: &lt;140<br>Prediabetes: 140-199<br><span class="diag-danger">Diabetes: 200+ mg/dL</span></div>
+        </div>
+        <div class="diag-card">
+            <div class="diag-icon"><i class="fas fa-chart-line"></i></div>
+            <h4>Hemoglobin A1c</h4>
+            <div class="diag-value">HbA1c</div>
+            <div class="diag-range">Normal: &lt;5.7%<br>Prediabetes: 5.7-6.4%<br><span class="diag-danger">Diabetes: 6.5%+</span></div>
+        </div>
+        <div class="diag-card">
+            <div class="diag-icon"><i class="fas fa-random"></i></div>
+            <h4>Random Blood Sugar</h4>
+            <div class="diag-value">RBS</div>
+            <div class="diag-range">With symptoms:<br><span class="diag-danger">200+ mg/dL = Diagnosis</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Chart Section -->
+<section id="statistics">
+    <div class="stats-chart-section reveal">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <span class="section-tag">GLOBAL STATISTICS</span>
+            <h3 style="font-size: 1.3rem;">Diabetes Prevalence Worldwide</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="diabetesChart" width="400" height="400"></canvas>
+        </div>
+        <div class="chart-numbers">
+            <div class="chart-stat">
+                <div class="chart-stat-value diabetic-stat" 
+                     data-source="International Diabetes Federation (IDF) Diabetes Atlas, 11th Edition (2025) — Adults (20-79 years) with diabetes" 
+                     data-link="https://diabetesatlas.org/">537M</div>
+                <div class="chart-stat-label">People with Diabetes</div>
+            </div>
+            <div class="chart-stat">
+                <div class="chart-stat-value healthy-stat" 
+                     data-source="International Diabetes Federation (IDF) — Estimated undiagnosed cases globally (2021)" 
+                     data-link="https://idf.org/about-diabetes/diabetes-facts-figures/">240M</div>
+                <div class="chart-stat-label">Undiagnosed Cases</div>
+            </div>
+            <div class="chart-stat">
+                <div class="chart-stat-value diabetic-stat" 
+                     data-source="International Diabetes Federation (IDF) — Annual deaths attributable to diabetes (2021)" 
+                     data-link="https://idf.org/">6.7M</div>
+                <div class="chart-stat-label">Annual Deaths</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- AI Diagnosis Section -->
+<section id="ai-diagnosis">
+    <div class="section-header">
+        <span class="section-tag"><i class="fas fa-microchip"></i> AI-POWERED</span>
+        <h2 class="section-title">Smart Health Assessment</h2>
+        <p class="section-subtitle">Advanced ML model for classification & regression</p>
+    </div>
+    
+    <div class="form-card reveal">
+        <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem;">
+            <i class="fas fa-robot" style="font-size: 1.5rem; color: var(--primary);"></i>
+            <h3 style="font-size: 1.2rem;">Patient Medical Data</h3>
+        </div>
+        <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 1.5rem;">Enter accurate information for best results</p>
+        
+        <!-- Gender selector -->
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;flex-wrap:wrap;">
+            <span style="font-size:0.82rem;font-weight:600;color:var(--heading);">
+                <i class="fas fa-venus-mars" style="color:var(--primary);"></i> Gender:
+            </span>
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:0.85rem;font-weight:500;">
+                <input type="radio" name="gender" id="genderFemale" value="female" checked onchange="handleGenderChange()" style="accent-color:var(--primary);width:16px;height:16px;">
+                <i class="fas fa-venus" style="color:#db2777;"></i> Female
+            </label>
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;font-size:0.85rem;font-weight:500;">
+                <input type="radio" name="gender" id="genderMale" value="male" onchange="handleGenderChange()" style="accent-color:var(--primary);width:16px;height:16px;">
+                <i class="fas fa-mars" style="color:#2563eb;"></i> Male
+            </label>
+            <span id="genderNote" style="font-size:0.75rem;color:var(--text-light);font-style:italic;">
+                <i class="fas fa-info-circle"></i> Pregnancies field active for females only
+            </span>
+        </div>
+
+        <div class="form-grid">
+
+            <!-- 1. Pregnancies -->
+            <div class="input-group">
+                <label><i class="fas fa-baby-carriage"></i> Pregnancies</label>
+                <input type="number" id="pregnancies" value="2" min="0" max="10" step="1"
+                       oninput="validateField(this)" onblur="validateField(this)"
+                       placeholder="0 – 10">
+                <div class="field-hint">
+                    <span class="hint-range"><i class="fas fa-minus-circle"></i> Min: 0</span>
+                    <span class="hint-normal"><i class="fas fa-check-circle"></i> Normal: 0–5</span>
+                    <span class="hint-range"><i class="fas fa-plus-circle"></i> Max: 10</span>
+                </div>
+                <div class="field-error" id="err-pregnancies"></div>
+            </div>
+
+            <!-- 2. Glucose -->
+            <div class="input-group">
+                <label><i class="fas fa-tint"></i> <span class="highlight-red">Glucose</span> (mg/dL)</label>
+                <input type="number" id="glucose" value="130" min="0" max="1000" step="1"
+                       oninput="validateField(this)" onblur="validateField(this)"
+                       placeholder="0 – 1000">
+                <div class="field-hint">
+                    <span class="hint-range"><i class="fas fa-minus-circle"></i> Min: 0</span>
+                    <span class="hint-normal"><i class="fas fa-check-circle"></i> Normal: 70–140</span>
+                    <span class="hint-range"><i class="fas fa-plus-circle"></i> Max: 1000</span>
+                </div>
+                <div class="field-error" id="err-glucose"></div>
+            </div>
+
+            <!-- 3. Blood Pressure -->
+            <div class="input-group">
+                <label><i class="fas fa-heart"></i> <span class="highlight-red">Blood Pressure</span> (mmHg)</label>
+                <input type="number" id="bloodPressure" value="80" min="20" max="300" step="1"
+                       oninput="validateField(this)" onblur="validateField(this)"
+                       placeholder="20 – 300">
+                <div class="field-hint">
+                    <span class="hint-range"><i class="fas fa-minus-circle"></i> Min: 20</span>
+                    <span class="hint-normal"><i class="fas fa-check-circle"></i> Normal: 60–90</span>
+                    <span class="hint-range"><i class="fas fa-plus-circle"></i> Max: 300</span>
+                </div>
+                <div class="field-error" id="err-bloodPressure"></div>
+            </div>
+
+            <!-- 4. Skin Thickness -->
+            <div class="input-group">
+                <label><i class="fas fa-hand-peace"></i> Skin Thickness (mm)</label>
+                <input type="number" id="skinThickness" value="25" min="0" max="100" step="1"
+                       oninput="validateField(this)" onblur="validateField(this)"
+                       placeholder="0 – 100">
+                <div class="field-hint">
+                    <span class="hint-range"><i class="fas fa-minus-circle"></i> Min: 0</span>
+                    <span class="hint-normal"><i class="fas fa-check-circle"></i> Normal: 10–40</span>
+                    <span class="hint-range"><i class="fas fa-plus-circle"></i> Max: 100</span>
+                </div>
+                <div class="field-error" id="err-skinThickness"></div>
+            </div>
+
+            <!-- 5. Insulin -->
+            <div class="input-group">
+                <label><i class="fas fa-syringe"></i> <span class="highlight-blue">Insulin</span> (µU/mL)</label>
+                <input type="number" id="insulin" value="150" min="0" max="500" step="1"
+                       oninput="validateField(this)" onblur="validateField(this)"
+                       placeholder="0 – 500">
+                <div class="field-hint">
+                    <span class="hint-range"><i class="fas fa-minus-circle"></i> Min: 0</span>
+                    <span class="hint-normal"><i class="fas fa-check-circle"></i> Normal: 16–166</span>
+                    <span class="hint-range"><i class="fas fa-plus-circle"></i> Max: 500</span>
+                </div>
+                <div class="field-error" id="err-insulin"></div>
+            </div>
+
+            <!-- 6. BMI -->
+            <div class="input-group">
+                <label><i class="fas fa-weight-scale"></i> BMI</label>
+                <input type="number" id="bmi" value="32.5" min="10" max="100" step="0.1"
+                       oninput="validateField(this)" onblur="validateField(this)"
+                       placeholder="10 – 100">
+                <div class="field-hint">
+                    <span class="hint-range"><i class="fas fa-minus-circle"></i> Min: 10</span>
+                    <span class="hint-normal"><i class="fas fa-check-circle"></i> Normal: 18.5–24.9</span>
+                    <span class="hint-range"><i class="fas fa-plus-circle"></i> Max: 100</span>
+                </div>
+                <div class="field-error" id="err-bmi"></div>
+            </div>
+
+            <!-- 7. DPF -->
+            <div class="input-group">
+                <label><i class="fas fa-dna"></i> Diabetes Pedigree</label>
+                <input type="number" id="dpf" value="0.5" min="0.001" max="150" step="0.001"
+                       oninput="validateField(this)" onblur="validateField(this)"
+                       placeholder="0.001 – 150">
+                <div class="field-hint">
+                    <span class="hint-range"><i class="fas fa-minus-circle"></i> Min: 0.001</span>
+                    <span class="hint-normal"><i class="fas fa-check-circle"></i> Normal: 0.08–1.5</span>
+                    <span class="hint-range"><i class="fas fa-plus-circle"></i> Max: 150</span>
+                </div>
+                <div class="field-error" id="err-dpf"></div>
+            </div>
+
+            <!-- 8. Age -->
+            <div class="input-group">
+                <label><i class="fas fa-calendar"></i> Age (years)</label>
+                <input type="number" id="age" value="45" min="1" max="120" step="1"
+                       oninput="validateField(this)" onblur="validateField(this)"
+                       placeholder="1 – 120">
+                <div class="field-hint">
+                    <span class="hint-range"><i class="fas fa-minus-circle"></i> Min: 1</span>
+                    <span class="hint-normal"><i class="fas fa-check-circle"></i> Normal: 10–100</span>
+                    <span class="hint-range"><i class="fas fa-plus-circle"></i> Max: 120</span>
+                </div>
+                <div class="field-error" id="err-age"></div>
+            </div>
+
+        </div>
+        
+        <button class="btn-primary" onclick="predictDemo()" style="width: 100%; margin-top: 1.5rem; justify-content: center;">
+            <i class="fas fa-stethoscope"></i> Analyze & Diagnose
+        </button>
+        
+        <div class="demo-badge" style="background:var(--green-light);color:var(--green);">
+            <i class="fas fa-brain"></i> Powered by AI — GradientBoosting Model (94.8% Accuracy)
+        </div>
+    </div>
+    
+    <div class="result-card" id="resultCard"></div>
+</section>
+
+<!-- Nutrition Section -->
+<section id="nutrition">
+    <div class="section-header">
+        <span class="section-tag">MEDICAL NUTRITION</span>
+        <h2 class="section-title">Nutrition Guide for <span class="highlight-blue">Diabetics</span></h2>
+        <p class="section-subtitle">Food is medicine — what you eat directly affects your blood sugar</p>
+    </div>
+    <div class="nutrition-wrapper reveal">
+        <div class="food-grid">
+            <div class="food-column food-allowed">
+                <h4><i class="fas fa-check-circle"></i> Recommended — Low Glycemic Index</h4>
+                <ul class="food-list">
+                    <li><i class="fas fa-leaf"></i> Leafy greens (spinach, broccoli, kale)</li>
+                    <li><i class="fas fa-fish"></i> Fatty fish rich in omega-3 (salmon, sardines)</li>
+                    <li><i class="fas fa-egg"></i> Eggs — excellent protein source</li>
+                    <li><i class="fas fa-seedling"></i> Raw nuts (almonds, walnuts)</li>
+                    <li><i class="fas fa-berry"></i> Berries and strawberries</li>
+                    <li><i class="fas fa-wheat-awn"></i> Whole oats, quinoa, whole grains</li>
+                    <li><i class="fas fa-seedling"></i> Lentils, chickpeas, beans</li>
+                </ul>
+            </div>
+            <div class="food-column food-avoid">
+                <h4><i class="fas fa-times-circle"></i> Avoid — Spike Blood Sugar Fast</h4>
+                <ul class="food-list">
+                    <li><i class="fas fa-candy-cane"></i> Candy, cake, refined sugars</li>
+                    <li><i class="fas fa-bottle-water"></i> Soda, sports drinks, juices</li>
+                    <li><i class="fas fa-bread-slice"></i> White bread, white rice, pasta</li>
+                    <li><i class="fas fa-french-fries"></i> Deep-fried, fast foods</li>
+                    <li><i class="fas fa-beer-mug-empty"></i> Alcohol — causes dangerous swings</li>
+                    <li><i class="fas fa-chocolate-bar"></i> Milk chocolate, confections</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Myths Section -->
+<section id="myths">
+    <div class="section-header">
+        <span class="section-tag">TRUTH VS FICTION</span>
+        <h2 class="section-title"><span class="highlight-blue">Diabetes</span> Myths — Fact or Fiction?</h2>
+        <p class="section-subtitle">Correcting misconceptions with science</p>
+    </div>
+    <div class="myths-grid reveal">
+        <div class="myth-card">
+            <span class="myth-badge myth"><i class="fas fa-times"></i> MYTH</span>
+            <h4>Diabetes is caused by eating too much sugar</h4>
+            <p>Type 1 is autoimmune, Type 2 is multifactorial — not just sugar intake alone.</p>
+        </div>
+        <div class="myth-card">
+            <span class="myth-badge fact"><i class="fas fa-check"></i> FACT</span>
+            <h4>Exercise can lower blood sugar without medication</h4>
+            <p>Exercise activates muscle glucose uptake independently of insulin.</p>
+        </div>
+        <div class="myth-card">
+            <span class="myth-badge myth"><i class="fas fa-times"></i> MYTH</span>
+            <h4>Diabetics can never eat sweets</h4>
+            <p>Small amounts can be enjoyed as part of a balanced plan.</p>
+        </div>
+        <div class="myth-card">
+            <span class="myth-badge fact"><i class="fas fa-check"></i> FACT</span>
+            <h4>Type 2 diabetes can go into remission</h4>
+            <p>Losing 10-15% body weight may achieve full remission.</p>
+        </div>
+        <div class="myth-card">
+            <span class="myth-badge myth"><i class="fas fa-times"></i> MYTH</span>
+            <h4>Insulin is addictive</h4>
+            <p>Insulin is a natural, essential hormone — not addictive.</p>
+        </div>
+        <div class="myth-card">
+            <span class="myth-badge fact"><i class="fas fa-check"></i> FACT</span>
+            <h4>Stress raises blood sugar</h4>
+            <p>Cortisol from stress directly increases blood glucose levels.</p>
+        </div>
+    </div>
+</section>
+
+<!-- References Section -->
+
+
+<!-- FAQ Section -->
+<section id="faq" style="background:#f8faff;padding:3rem 2rem;">
+    <div style="max-width:800px;margin:0 auto;" class="reveal">
+
+        <!-- Single collapsible FAQ tab -->
+        <div onclick="toggleFaqPanel()"
+             style="display:flex;align-items:center;justify-content:space-between;
+                    background:linear-gradient(135deg,#7c3aed,#6d28d9);
+                    border-radius:20px;padding:1.2rem 1.6rem;cursor:pointer;
+                    box-shadow:0 8px 25px rgba(124,58,237,0.3);user-select:none;">
+            <div style="display:flex;align-items:center;gap:1rem;">
+                <div style="width:48px;height:48px;background:rgba(255,255,255,0.15);
+                            border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-question-circle" style="color:#fff;font-size:1.3rem;"></i>
+                </div>
+                <div>
+                    <div style="color:#fff;font-size:1.1rem;font-weight:700;">Frequently Asked Questions</div>
+                    <div style="color:rgba(255,255,255,0.75);font-size:0.78rem;">
+                        10 questions about diabetes &amp; the platform — click to expand
+                    </div>
+                </div>
+            </div>
+            <i id="faq-panel-chevron" class="fas fa-chevron-down"
+               style="color:#fff;font-size:1.1rem;transition:transform 0.35s ease;"></i>
+        </div>
+
+        <!-- Collapsible body -->
+        <div id="faq-panel-body"
+             style="max-height:0;overflow:hidden;transition:max-height 0.6s ease,opacity 0.4s ease;opacity:0;">
+            <div style="padding:1.5rem 0 0;">
+
+                <div class="faq-group-title"><i class="fas fa-heartbeat"></i> About Diabetes</div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q"><span>What is diabetes mellitus?</span><i class="fas fa-plus faq-icon"></i></div>
+                    <div class="faq-a">Diabetes mellitus is a chronic metabolic disease characterized by elevated blood glucose levels. It occurs when the body either does not produce enough insulin (Type 1) or cannot effectively use the insulin it produces (Type 2). Left untreated, it can cause serious complications affecting the heart, kidneys, eyes, and nerves.</div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q"><span>What are the early warning signs of diabetes?</span><i class="fas fa-plus faq-icon"></i></div>
+                    <div class="faq-a">Common early signs include: frequent urination, excessive thirst, unexplained weight loss, constant fatigue, blurred vision, slow-healing wounds, and frequent infections. Many people with Type 2 diabetes have no symptoms initially — which is why regular screening is important.</div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q"><span>What blood glucose level indicates diabetes?</span><i class="fas fa-plus faq-icon"></i></div>
+                    <div class="faq-a">According to the ADA: Fasting glucose ≥ 126 mg/dL, or 2-hour glucose ≥ 200 mg/dL during an oral glucose tolerance test, or HbA1c ≥ 6.5%, or random glucose ≥ 200 mg/dL with symptoms — any of these on two separate occasions confirms a diabetes diagnosis.</div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q"><span>Is diabetes hereditary?</span><i class="fas fa-plus faq-icon"></i></div>
+                    <div class="faq-a">Both Type 1 and Type 2 have genetic components. If a parent has Type 2 diabetes, your risk is 40% higher. However, lifestyle factors play a major role — maintaining healthy weight and exercise habits can significantly reduce the genetic risk for Type 2 diabetes.</div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q"><span>Can diabetes be cured permanently?</span><i class="fas fa-plus faq-icon"></i></div>
+                    <div class="faq-a">Type 1 currently has no cure. Type 2 can go into remission through significant weight loss (10–15% of body weight) and sustained lifestyle changes — meaning blood sugar returns to normal without medication. However, it requires lifelong healthy habits to maintain remission.</div>
+                </div>
+
+                <div class="faq-group-title" style="margin-top:1.5rem;"><i class="fas fa-robot"></i> About DiabetesAI</div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q"><span>How accurate is the AI diagnosis tool?</span><i class="fas fa-plus faq-icon"></i></div>
+                    <div class="faq-a">The AI model (GradientBoosting Classifier) achieves approximately 87–95% accuracy on the Pima Indians Diabetes Dataset. However, this is an educational screening tool — not a medical diagnosis. Always consult a licensed physician for actual medical decisions.</div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q"><span>What data does the AI use to make predictions?</span><i class="fas fa-plus faq-icon"></i></div>
+                    <div class="faq-a">The model uses 8 clinical measurements: number of pregnancies, plasma glucose level, blood pressure, skin thickness, insulin level, BMI, diabetes pedigree function (genetic risk score), and age — the standard Pima Indians Diabetes Dataset features.</div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q"><span>Is my personal health data stored securely?</span><i class="fas fa-plus faq-icon"></i></div>
+                    <div class="faq-a">Yes. Your data is stored locally in an SQLite database. Passwords are hashed using SHA-256 encryption and are never stored in plain text. Your health analysis results are only accessible when you are logged into your account.</div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q"><span>Why do I need to create an account?</span><i class="fas fa-plus faq-icon"></i></div>
+                    <div class="faq-a">An account allows you to save your analysis history, track your health data over time, and view your personalized dashboard. It also ensures that your sensitive health information remains private and accessible only to you.</div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q"><span>Can I use this platform as a replacement for a doctor?</span><i class="fas fa-plus faq-icon"></i></div>
+                    <div class="faq-a">No. DiabetesAI is an educational and awareness tool designed to help you understand your risk factors. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the guidance of a qualified healthcare provider.</div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<footer>
+    <div class="footer-grid">
+        <div>
+            <div class="footer-logo"><i class="fas fa-heartbeat" style="color: var(--primary);"></i> DiabetesAI</div>
+            <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.5rem;">Advanced AI-powered medical education platform</p>
+        </div>
+        <div class="footer-col">
+            <h5>Quick Links</h5>
+            <ul>
+                <li><a onclick="scrollToSection('overview')">Overview</a></li>
+                <li><a onclick="scrollToSection('types')">Types of Diabetes</a></li>
+                <li><a onclick="scrollToSection('diagnosis')">Diagnosis Criteria</a></li>
+                <li><a onclick="scrollToSection('ai-diagnosis')">AI Analysis</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h5>Resources</h5>
+            <ul>
+                <li><a onclick="scrollToSection('nutrition')">Nutrition Guide</a></li>
+                <li><a onclick="scrollToSection('myths')">Myths vs Facts</a></li>
+
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2026 DiabetesAI — Medical Education Platform</p>
+        <p><i class="fas fa-heart" style="color: var(--red);"></i> Built with science & care</p>
+    </div>
+    <div class="disclaimer">
+        <i class="fas fa-exclamation-triangle"></i> Medical Disclaimer: For educational purposes only. Always consult a qualified healthcare provider.
+    </div>
+</footer>
+
+<script>
+    // Chart.js - Diabetes Statistics Chart
+    const ctx = document.getElementById('diabetesChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Diabetic Population', 'At Risk / Prediabetes', 'Healthy Population'],
+            datasets: [{
+                data: [537, 374, 5000],
+                backgroundColor: ['#dc2626', '#d97706', '#059669'],
+                borderColor: ['rgba(220,38,38,0.3)', 'rgba(217,119,6,0.3)', 'rgba(5,150,105,0.3)'],
+                borderWidth: 2,
+                hoverOffset: 15,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { position: 'bottom', labels: { font: { size: 12, family: 'Inter' }, color: '#334155', usePointStyle: true, pointStyle: 'circle' } },
+                tooltip: {
+                    backgroundColor: 'rgba(255,255,255,0.95)',
+                    titleColor: '#0a1c3a',
+                    bodyColor: '#334155',
+                    borderColor: '#2563eb',
+                    borderWidth: 1,
+                    callbacks: { label: function(context) { let label = context.label || ''; let value = context.raw; let total = context.dataset.data.reduce((a, b) => a + b, 0); let percentage = ((value / total) * 100).toFixed(1); return `${label}: ${value}M (${percentage}%)`; } }
+                }
+            },
+            cutout: '60%',
+            animation: { animateRotate: true, duration: 2000, easing: 'easeOutBounce' }
+        }
+    });
+
+    // Function to add source tooltips and clickable links to all elements with data-source attribute
+    function addSourceHandlers() {
+        document.querySelectorAll('[data-source]').forEach(el => {
+            // Set tooltip title
+            let titleText = el.getAttribute('data-source');
+            if (el.getAttribute('data-link')) {
+                titleText += ' 🔗 Click to open source';
+            }
+            el.setAttribute('title', titleText);
+            
+            // Add click handler if link exists
+            if (el.getAttribute('data-link')) {
+                el.style.cursor = 'pointer';
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.open(el.getAttribute('data-link'), '_blank');
+                });
+            } else {
+                el.style.cursor = 'help';
+            }
+        });
+    }
+
+    // ── Field Configs ─────────────────────────────────────────────────────────
+    const FIELD_CONFIG = {
+        pregnancies:   { min:0,     max:10,   normalMin:0,    normalMax:5,    label:'Pregnancies',       unit:'' },
+        glucose:       { min:0,     max:1000, normalMin:70,   normalMax:140,  label:'Glucose',           unit:'mg/dL' },
+        bloodPressure: { min:20,    max:300,  normalMin:60,   normalMax:90,   label:'Blood Pressure',    unit:'mmHg' },
+        skinThickness: { min:0,     max:100,  normalMin:10,   normalMax:40,   label:'Skin Thickness',    unit:'mm' },
+        insulin:       { min:0,     max:500,  normalMin:16,   normalMax:166,  label:'Insulin',           unit:'µU/mL' },
+        bmi:           { min:10,    max:100,  normalMin:18.5, normalMax:24.9, label:'BMI',               unit:'' },
+        dpf:           { min:0.001, max:150,  normalMin:0.08, normalMax:1.5,  label:'Diabetes Pedigree', unit:'' },
+        age:           { min:1,     max:120,  normalMin:10,   normalMax:100,  label:'Age',               unit:'yrs' },
+    };
+
+    // ── Fix 1: Block any non-numeric characters on keydown ──────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+        Object.keys(FIELD_CONFIG).forEach(id => {
+            const inp = document.getElementById(id);
+            if (!inp) return;
+
+            // Block: +, -, e, E, spaces, letters — allow only digits and one dot
+            inp.addEventListener('keydown', (e) => {
+                const blocked = ['+', '-', 'e', 'E', ' '];
+                if (blocked.includes(e.key)) { e.preventDefault(); return; }
+            });
+
+            // Strip non-numeric characters only — do NOT validate/clamp while typing
+            inp.addEventListener('input', () => {
+                const cfg = FIELD_CONFIG[inp.id];
+                const allowDecimal = (cfg.min % 1 !== 0 || cfg.normalMin % 1 !== 0 || cfg.normalMax % 1 !== 0);
+                let raw = inp.value;
+                if (allowDecimal) {
+                    raw = raw.replace(/[^0-9.]/g, '');
+                    const parts = raw.split('.');
+                    if (parts.length > 2) raw = parts[0] + '.' + parts.slice(1).join('');
+                } else {
+                    raw = raw.replace(/[^0-9]/g, '');
+                    // Only limit to 4 digits max (enough for any field)
+                    if (raw.length > 4) raw = raw.slice(0, 4);
+                }
+                if (inp.value !== raw) inp.value = raw;
+                // Show live warning only — no clamping while user is still typing
+                liveWarn(inp);
+            });
+
+            // Full validation (including min/max clamp) only when user leaves the field
+            inp.addEventListener('blur', () => validateField(inp));
+        });
+    });
+
+    // Live warning while typing (no clamping, no errors — just soft color)
+    function liveWarn(input) {
+        const cfg = FIELD_CONFIG[input.id];
+        if (!cfg) return;
+        const val = parseFloat(input.value);
+        if (isNaN(val) || input.value === '') {
+            input.classList.remove('input-warn', 'input-danger');
+            return;
+        }
+        if (val < cfg.normalMin || val > cfg.normalMax) {
+            input.classList.remove('input-danger');
+            input.classList.add('input-warn');
+        } else {
+            input.classList.remove('input-warn', 'input-danger');
+        }
+    }
+
+    function validateField(input) {
+        const id  = input.id;
+        const cfg = FIELD_CONFIG[id];
+        if (!cfg) return true;
+        const errEl = document.getElementById('err-' + id);
+        const raw = input.value.trim();
+        const val = parseFloat(raw);
+
+        input.classList.remove('input-warn', 'input-danger');
+        if (errEl) errEl.innerHTML = '';
+
+        if (raw === '' || isNaN(val)) return true;
+
+        // Hard block: below min
+        if (val < cfg.min) {
+            input.value = cfg.min;
+            input.classList.add('input-danger');
+            if (errEl) errEl.innerHTML =
+                `<i class="fas fa-ban"></i> Cannot go below minimum (${cfg.min})`;
+            return false;
+        }
+
+        // Hard block: above max
+        if (val > cfg.max) {
+            input.value = cfg.max;
+            input.classList.add('input-danger');
+            if (errEl) errEl.innerHTML =
+                `<i class="fas fa-ban"></i> Cannot exceed maximum (${cfg.max})`;
+            return false;
+        }
+
+        // Soft warn: outside normal range
+        if (val < cfg.normalMin || val > cfg.normalMax) {
+            input.classList.add('input-warn');
+            const dir = val < cfg.normalMin ? 'below' : 'above';
+            const isCritical = (val < cfg.normalMin * 0.5 || val > cfg.normalMax * 2);
+            const severity = isCritical ? '⚠️ Critically' : '⚠️';
+            if (errEl) errEl.innerHTML =
+                `<i class="fas fa-exclamation-triangle" style="color:#d97706"></i> ` +
+                `${severity} ${dir} normal range (${cfg.normalMin}–${cfg.normalMax} ${cfg.unit})`;
+        }
+        return true;
+    }
+
+    function handleGenderChange() {
+        const isMale = document.getElementById('genderMale').checked;
+        const pregInput = document.getElementById('pregnancies');
+        const errEl = document.getElementById('err-pregnancies');
+        if (isMale) {
+            pregInput.value = 0;
+            pregInput.disabled = true;
+            pregInput.classList.remove('input-warn', 'input-danger');
+            if (errEl) errEl.innerHTML =
+                '<i class="fas fa-info-circle" style="color:#2563eb"></i> Not applicable for males';
+        } else {
+            pregInput.disabled = false;
+            if (errEl) errEl.innerHTML = '';
+        }
+    }
+
+    // ── Block analysis if too many unrealistic extreme values ─────────────────
+    function validateAllFields() {
+        let valid = true;
+        const isMale = document.getElementById('genderMale').checked;
+        const ids = ['glucose','bloodPressure','skinThickness','insulin','bmi','dpf','age'];
+        if (!isMale) ids.unshift('pregnancies');
+
+        // Fields that are critically below normal (not just at min — they can be 0 legitimately)
+        // We only block if the value is at the ABSOLUTE min AND critically far from normal
+        let criticallyLow  = [];  // value == min AND < normalMin*0.3
+        let criticallyHigh = [];  // value == max
+        let emptyFields    = [];
+
+        for (const id of ids) {
+            const inp = document.getElementById(id);
+            if (!inp || inp.disabled) continue;
+            const cfg = FIELD_CONFIG[id];
+            const raw = inp.value.trim();
+            const val = parseFloat(raw);
+
+            // Empty check
+            if (raw === '' || isNaN(val)) {
+                const errEl = document.getElementById('err-' + id);
+                inp.classList.add('input-danger');
+                if (errEl) errEl.innerHTML =
+                    `<i class="fas fa-ban"></i> هذا الحقل مطلوب — This field is required`;
+                emptyFields.push(cfg.label);
+                valid = false;
+                continue;
+            }
+
+            // Per-field range validation
+            validateField(inp);
+
+            // Only flag as "critically extreme" if at absolute max
+            if (val >= cfg.max) {
+                criticallyHigh.push(cfg.label);
+            }
+
+            // Flag as critically low ONLY if value is at the hard minimum
+            // AND that minimum is genuinely impossible in real life (not 0 for pregnancies/insulin/skinThickness)
+            const zeroOkFields = ['pregnancies','insulin','skinThickness','glucose'];
+            const isAtMin = val <= cfg.min;
+            const isZeroOkField = zeroOkFields.includes(id);
+            if (isAtMin && !isZeroOkField) {
+                criticallyLow.push(cfg.label);
+            }
+        }
+
+        // Show clear error for empty fields
+        if (emptyFields.length > 0) {
+            showGlobalError(
+                `📋 يرجى إكمال جميع الحقول — Please fill all required fields`,
+                `الحقول الفارغة: ${emptyFields.join(', ')}`,
+                `Make sure every field has a valid number before running the analysis.`
+            );
+            return false;
+        }
+
+        // Block if 3+ fields are at absolute maximum
+        if (criticallyHigh.length >= 3) {
+            showGlobalError(
+                `🚫 لا يمكن إجراء التحليل — Analysis cannot proceed`,
+                `${criticallyHigh.length} fields are at their absolute maximum values: ${criticallyHigh.join(', ')}`,
+                `هذه القيم غير واقعية معاً — These extreme values together are not clinically realistic. Please enter real patient measurements.`
+            );
+            valid = false;
+        }
+
+        // Block if 3+ non-zero fields are at absolute minimum (bp, bmi, dpf, age)
+        if (criticallyLow.length >= 3) {
+            showGlobalError(
+                `🚫 لا يمكن إجراء التحليل — Analysis cannot proceed`,
+                `${criticallyLow.length} fields are at their minimum values: ${criticallyLow.join(', ')}`,
+                `يرجى إدخال بيانات حقيقية للمريض — Please enter real patient data for an accurate result.`
+            );
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    function showGlobalError(title, detail='', hint='') {
+        const resultCard = document.getElementById('resultCard');
+        resultCard.className = 'result-card result-diabetic show';
+        resultCard.innerHTML = `
+            <div style="padding:1.8rem 1.5rem;text-align:center;">
+                <i class="fas fa-exclamation-circle" style="font-size:2.5rem;color:#dc2626;"></i>
+                <div style="margin-top:0.8rem;font-weight:700;font-size:1rem;color:#dc2626;">${title}</div>
+                ${detail ? `<div style="margin-top:0.5rem;font-size:0.82rem;color:#b91c1c;background:#fef2f2;
+                    border-radius:10px;padding:0.5rem 0.8rem;display:inline-block;">${detail}</div>` : ''}
+                ${hint ? `<div style="margin-top:0.6rem;font-size:0.78rem;color:var(--text-light);">${hint}</div>` : ''}
+            </div>`;
+        resultCard.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+
+    // ── Real AI Prediction via Flask Backend ──────────────────────────────────
+    async function predictDemo() {
+        const btn = document.querySelector('.btn-primary');
+        const resultCard = document.getElementById('resultCard');
+
+        if (!validateAllFields()) {
+            return;
+        }
+
+        const isMale = document.getElementById('genderMale').checked;
+
+        const payload = {
+            pregnancies:   isMale ? 0 : (parseFloat(document.getElementById('pregnancies').value) || 0),
+            glucose:       parseFloat(document.getElementById('glucose').value)       || 0,
+            bloodPressure: parseFloat(document.getElementById('bloodPressure').value) || 0,
+            skinThickness: parseFloat(document.getElementById('skinThickness').value) || 0,
+            insulin:       parseFloat(document.getElementById('insulin').value)       || 0,
+            bmi:           parseFloat(document.getElementById('bmi').value)           || 0,
+            dpf:           parseFloat(document.getElementById('dpf').value)           || 0,
+            age:           parseFloat(document.getElementById('age').value)           || 0,
+        };
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+        resultCard.className = 'result-card';
+        resultCard.innerHTML = `
+            <div style="text-align:center;padding:2rem;">
+                <i class="fas fa-brain fa-3x" style="color:var(--primary);animation:bounce 1s infinite;"></i>
+                <p style="margin-top:1rem;color:var(--text-light);font-size:0.9rem;">AI Model is analyzing your medical data...</p>
+            </div>`;
+        resultCard.classList.add('show');
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        try {
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            // Not logged in — redirect to login
+            if (response.status === 401) {
+                resultCard.innerHTML = `
+                    <div style="padding:2rem;text-align:center;">
+                        <i class="fas fa-lock" style="font-size:2.5rem;color:#2563eb;margin-bottom:1rem;display:block;"></i>
+                        <div style="font-size:1rem;font-weight:700;color:#0a1c3a;margin-bottom:0.5rem;">
+                            Login Required
+                        </div>
+                        <p style="color:#64748b;font-size:0.85rem;margin-bottom:1.2rem;">
+                            You need to sign in to run an analysis and save your results.
+                        </p>
+                        <div style="display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;">
+                            <a href="/login" style="padding:0.6rem 1.4rem;background:#2563eb;color:#fff;
+                                border-radius:12px;font-weight:600;font-size:0.85rem;text-decoration:none;">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </a>
+                            <a href="/register" style="padding:0.6rem 1.4rem;background:#ecfdf5;color:#059669;
+                                border:1px solid #bbf7d0;border-radius:12px;font-weight:600;font-size:0.85rem;text-decoration:none;">
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </a>
+                        </div>
+                    </div>`;
+                return;
+            }
+
+            const data = await response.json();
+            if (data.status !== 'success') { showError(data.message || 'Server error.'); return; }
+            displayResult(data);
+            if (data.survey && data.survey.remind_first_time) {
+                alert('Great! You completed your first analysis. Please fill in the survey from your dashboard.');
+            }
+        } catch (err) {
+            showError('Could not connect to server. Make sure Flask is running on port 5000.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-stethoscope"></i> Analyze & Diagnose';
+        }
+    }
+
+    function showError(msg) { showGlobalError(msg); }
+
+    function toggleSection(id) {
+        const body = document.getElementById(id);
+        const icon = document.getElementById('icon-' + id);
+        if (!body) return;
+        const isOpen = body.style.maxHeight && body.style.maxHeight !== '0px';
+        body.style.maxHeight = isOpen ? '0px' : '2000px';
+        body.style.opacity   = isOpen ? '0'   : '1';
+        if (icon) icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+
+    function buildAccordion(id, icon, title, color, badgeText, content) {
+        return `
+        <div style="border:1.5px solid ${color}30;border-radius:18px;overflow:hidden;margin-bottom:0.8rem;">
+            <div onclick="toggleSection('${id}')"
+                 style="display:flex;align-items:center;gap:0.8rem;padding:1rem 1.2rem;cursor:pointer;
+                        background:${color}10;user-select:none;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:0.8rem;">
+                    <span style="width:36px;height:36px;background:${color};border-radius:10px;
+                                 display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fas fa-${icon}" style="color:#fff;font-size:0.9rem;"></i>
+                    </span>
+                    <div>
+                        <div style="font-size:0.9rem;font-weight:700;color:var(--heading);">${title}</div>
+                        <div style="font-size:0.7rem;color:var(--text-light);">${badgeText}</div>
+                    </div>
+                </div>
+                <i id="icon-${id}" class="fas fa-chevron-down"
+                   style="color:${color};transition:transform 0.3s;flex-shrink:0;"></i>
+            </div>
+            <div id="${id}" style="max-height:0px;opacity:0;overflow:hidden;
+                                   transition:max-height 0.5s ease, opacity 0.4s ease;">
+                <div style="padding:1.2rem 1.2rem 1.4rem;">${content}</div>
+            </div>
+        </div>`;
+    }
+
+    function displayResult(data) {
+        const resultCard = document.getElementById('resultCard');
+        const isDiabetic = data.is_diabetic;
+        const prob  = data.probability.diabetic;
+        const risk  = data.risk;
+        const nut   = data.nutrition;
+        const ex    = data.exercise;
+        const mon   = data.monitoring;
+        const men   = data.mental;
+
+        const fillClass = prob >= 70 ? 'fill-high' : prob >= 40 ? 'fill-medium' : 'fill-low';
+        const riskColorMap = { red:'#dc2626', orange:'#ea580c', yellow:'#d97706', green:'#059669' };
+        const riskColor = riskColorMap[risk.color] || '#2563eb';
+
+        resultCard.className = `result-card ${isDiabetic ? 'result-diabetic' : 'result-healthy'} show`;
+
+        // ── 1. Diagnosis Header ───────────────────────────────────────────────
+        let html = `
+        <div class="result-header">
+            <div class="result-status ${isDiabetic ? 'diabetic' : 'healthy'}">
+                <i class="fas fa-${isDiabetic ? 'exclamation-triangle' : 'check-circle'}"></i>
+                ${data.prediction}
+            </div>
+            <div style="margin:0.8rem 0 0.3rem;font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">AI Confidence</div>
+            <div class="confidence-bar">
+                <div class="confidence-fill ${fillClass}" style="width:${prob}%"></div>
+            </div>
+            <div style="font-size:0.85rem;margin-top:0.4rem;">
+                <strong style="color:${riskColor}">${risk.level}</strong>
+                &nbsp;|&nbsp; Diabetic probability: <strong>${prob}%</strong>
+            </div>
+        </div>
+
+        <!-- Clinical Stats -->
+        <div class="result-stats" style="grid-template-columns:repeat(3,1fr);">
+            <div class="result-stat">
+                <div class="result-stat-label">GLUCOSE</div>
+                <div class="result-stat-value">${data.glucose}<span style="font-size:0.7rem;">mg/dL</span></div>
+                <div style="font-size:0.7rem;color:${data.glucose_status==='Normal'?'#059669':data.glucose_status==='Prediabetes'?'#d97706':'#dc2626'}">${data.glucose_status}</div>
+            </div>
+            <div class="result-stat">
+                <div class="result-stat-label">BMI</div>
+                <div class="result-stat-value">${data.bmi}</div>
+                <div style="font-size:0.7rem;color:${data.bmi_category==='Normal'?'#059669':'#d97706'}">${data.bmi_category}</div>
+            </div>
+            <div class="result-stat">
+                <div class="result-stat-label">BLOOD PRESSURE</div>
+                <div class="result-stat-value" style="font-size:1rem;">${document.getElementById('bloodPressure').value}<span style="font-size:0.7rem;">mmHg</span></div>
+                <div style="font-size:0.7rem;color:${data.bp_status==='Normal'?'#059669':'#d97706'}">${data.bp_status}</div>
+            </div>
+        </div>
+
+        <div style="margin-top:1.5rem;">
+            <p style="font-size:0.78rem;color:var(--text-light);margin-bottom:1rem;text-align:center;">
+                <i class="fas fa-hand-point-down"></i> Tap any section below to expand your personalized plan
+            </p>`;
+
+        // ── 2. Nutrition Accordion (fully dynamic) ────────────────────────────
+        const nutTipsHtml = nut.tips.map(t => `
+            <div style="background:#f8faff;border-left:3px solid ${t.color};border-radius:8px;
+                        padding:0.5rem 0.8rem;font-size:0.8rem;display:flex;gap:0.5rem;align-items:flex-start;">
+                <span style="flex-shrink:0;">${t.icon}</span>
+                <span style="color:var(--heading);">${t.text}</span>
+            </div>`).join('');
+
+        const nutOkHtml = nut.foods_ok.map(f => `
+            <div style="background:#ecfdf5;border-radius:10px;padding:0.45rem 0.8rem;
+                        font-size:0.8rem;display:flex;gap:0.5rem;align-items:center;">
+                <span>✅</span><span>${f}</span>
+            </div>`).join('');
+
+        const nutAvoidHtml = nut.foods_avoid.map(f => `
+            <div style="background:#fef2f2;border-radius:10px;padding:0.45rem 0.8rem;
+                        font-size:0.8rem;display:flex;gap:0.5rem;align-items:center;">
+                <span>❌</span><span>${f}</span>
+            </div>`).join('');
+
+        const nutContent = `
+            <div style="text-align:center;margin-bottom:1rem;">
+                <span style="background:var(--primary-soft);color:var(--primary);
+                             padding:0.4rem 1rem;border-radius:50px;font-size:0.82rem;font-weight:600;">
+                    <i class="fas fa-utensils"></i> ${nut.meal_plan}
+                </span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-bottom:1.2rem;">
+                <div style="text-align:center;background:var(--accent-light);border-radius:12px;padding:0.7rem;">
+                    <div style="font-size:1.2rem;font-weight:700;color:var(--primary)">${nut.calories}</div>
+                    <div style="font-size:0.6rem;color:var(--text-light);text-transform:uppercase;">Calories</div>
+                </div>
+                <div style="text-align:center;background:#ecfdf5;border-radius:12px;padding:0.7rem;">
+                    <div style="font-size:1.2rem;font-weight:700;color:#059669">${nut.protein}g</div>
+                    <div style="font-size:0.6rem;color:var(--text-light);text-transform:uppercase;">Protein</div>
+                </div>
+                <div style="text-align:center;background:#fffbeb;border-radius:12px;padding:0.7rem;">
+                    <div style="font-size:1.2rem;font-weight:700;color:#d97706">${nut.carbs}g</div>
+                    <div style="font-size:0.6rem;color:var(--text-light);text-transform:uppercase;">Carbs</div>
+                </div>
+                <div style="text-align:center;background:#fdf4ff;border-radius:12px;padding:0.7rem;">
+                    <div style="font-size:1.2rem;font-weight:700;color:#7c3aed">${nut.fats}g</div>
+                    <div style="font-size:0.6rem;color:var(--text-light);text-transform:uppercase;">Fats</div>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;">
+                <div style="font-size:0.75rem;font-weight:700;color:var(--heading);margin-bottom:0.2rem;">
+                    📋 Personalized Tips for You:
+                </div>
+                ${nutTipsHtml}
+            </div>
+            ${nut.foods_ok.length > 0 ? `
+            <div style="font-size:0.75rem;font-weight:700;color:#059669;margin:0.8rem 0 0.3rem;">
+                ✅ Recommended Foods:
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.4rem;">${nutOkHtml}</div>` : ''}
+            ${nut.foods_avoid.length > 0 ? `
+            <div style="font-size:0.75rem;font-weight:700;color:#dc2626;margin:0.8rem 0 0.3rem;">
+                ❌ Foods to Avoid:
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.4rem;">${nutAvoidHtml}</div>` : ''}`;
+
+        html += buildAccordion('sec-diet', 'utensils', 'Smart Nutrition Plan', '#059669',
+            `${nut.meal_plan} • ${nut.calories} cal/day`, nutContent);
+
+        // ── 3. Exercise Accordion (fully dynamic) ─────────────────────────────
+        const exWarnsHtml = ex.warnings.map(w => `
+            <div style="background:#fef2f2;border-radius:10px;padding:0.6rem 0.9rem;
+                        font-size:0.8rem;font-weight:600;color:#dc2626;">${w}</div>`).join('');
+
+        const exCardsHtml = ex.exercises.map(e => `
+            <div style="background:#f0fdfa;border-radius:14px;padding:0.9rem;">
+                <div style="font-size:1.4rem;margin-bottom:0.3rem;">${e.icon}</div>
+                <div style="font-weight:700;font-size:0.85rem;color:var(--heading);">${e.name}</div>
+                <div style="font-size:0.75rem;color:#0d9488;font-weight:600;">${e.freq} • ${e.duration}</div>
+                <div style="font-size:0.72rem;color:var(--text-light);margin-top:0.3rem;">${e.why}</div>
+            </div>`).join('');
+
+        const exTipsHtml = ex.tips.map(t => `
+            <div style="background:#f0fdfa;border-left:3px solid #0d9488;border-radius:8px;
+                        padding:0.45rem 0.8rem;font-size:0.79rem;color:var(--heading);">
+                💡 ${t}
+            </div>`).join('');
+
+        const exContent = `
+            ${ex.warnings.length > 0 ? `<div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.8rem;">${exWarnsHtml}</div>` : ''}
+            <div style="background:#ecfdf5;border-radius:12px;padding:0.7rem;text-align:center;
+                        font-size:0.82rem;color:#059669;font-weight:600;margin-bottom:1rem;">
+                🎯 ${ex.sessions} sessions/week • ${ex.session_min} min each • Intensity: ${ex.intensity}
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.8rem;margin-bottom:1rem;">
+                ${exCardsHtml}
+            </div>
+            <div style="font-size:0.75rem;font-weight:700;color:var(--heading);margin-bottom:0.4rem;">
+                📌 Important Tips:
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.4rem;">${exTipsHtml}</div>`;
+
+        html += buildAccordion('sec-exercise', 'running', 'Exercise Plan', '#0d9488',
+            `${ex.sessions} sessions/week • ${ex.intensity} intensity`, exContent);
+
+        // ── 4. Monitoring Accordion (fully dynamic) ───────────────────────────
+        const monChecksHtml = mon.checks.map(c => `
+            <div style="background:${c.bg};border-radius:12px;padding:0.7rem 1rem;
+                        display:flex;gap:0.7rem;align-items:flex-start;">
+                <span style="font-size:1.1rem;flex-shrink:0;">${c.icon}</span>
+                <div>
+                    <span style="font-size:0.82rem;color:var(--heading);">${c.text}</span>
+                </div>
+            </div>`).join('');
+
+        const monSchedHtml = mon.schedule.map(s => `
+            <div style="display:flex;gap:0.8rem;align-items:flex-start;padding:0.5rem 0;
+                        border-bottom:1px solid var(--border-light);">
+                <span style="font-size:0.72rem;font-weight:700;color:var(--primary);
+                             white-space:nowrap;min-width:120px;">${s.time}</span>
+                <span style="font-size:0.8rem;color:var(--heading);">→ ${s.task}</span>
+            </div>`).join('');
+
+        const monContent = `
+            <div style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.2rem;">
+                ${monChecksHtml}
+            </div>
+            <div style="font-size:0.75rem;font-weight:700;color:var(--heading);margin-bottom:0.5rem;">
+                📅 Your Personal Schedule:
+            </div>
+            <div style="background:#f8faff;border-radius:12px;padding:0.8rem;">
+                ${monSchedHtml}
+            </div>`;
+
+        html += buildAccordion('sec-monitor', 'heartbeat', 'Monitor & Manage', '#dc2626',
+            isDiabetic ? 'Daily tracking recommended' : 'Periodic monitoring advised', monContent);
+
+        // ── 5. Mental Wellness Accordion (fully dynamic) ──────────────────────
+        const menTipsHtml = men.tips.map(t => `
+            <div style="background:${t.bg};border-radius:14px;padding:0.9rem;">
+                <div style="font-size:1.3rem;margin-bottom:0.3rem;">${t.icon}</div>
+                <div style="font-weight:700;font-size:0.82rem;color:var(--heading);">${t.title}</div>
+                <div style="font-size:0.72rem;color:var(--text-light);margin-top:0.25rem;">${t.desc}</div>
+            </div>`).join('');
+
+        const menContent = `
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.8rem;margin-bottom:1rem;">
+                ${menTipsHtml}
+            </div>
+            ${men.quote ? `
+            <div class="motivation-quote" style="margin-top:0.5rem;">
+                <i class="fas fa-quote-right"></i>
+                <p>${men.quote}</p>
+            </div>` : ''}`;
+
+        html += buildAccordion('sec-mental', 'brain', 'Mental Wellness & Motivation', '#7c3aed',
+            'Personalized stress & mindfulness plan', menContent);
+
+        html += `</div>
+        <p style="text-align:center;font-size:0.72rem;color:var(--text-light);margin-top:1.2rem;">
+            <i class="fas fa-info-circle"></i> AI-generated educational analysis. Always consult a licensed physician.
+        </p>`;
+
+        resultCard.innerHTML = html;
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setTimeout(() => toggleSection('sec-diet'), 400);
+        addSourceHandlers();
+    }
+
+    // ── Auth State ────────────────────────────────────────────────────────────
+    async function checkAuthState() {
+        try {
+            const res  = await fetch('/api/me');
+            const data = await res.json();
+            const navAuth = document.getElementById('navAuth');
+            if (data.logged_in) {
+                navAuth.innerHTML = `
+                    <a href="/dashboard" style="display:flex;align-items:center;gap:0.4rem;
+                        padding:0.4rem 0.9rem;background:#eff6ff;
+                        color:#2563eb;border-radius:10px;font-size:0.8rem;font-weight:600;
+                        text-decoration:none;border:1px solid #bfdbfe;">
+                        <i class="fas fa-th-large"></i> ${data.username}
+                    </a>
+                    <a href="/logout" style="display:flex;align-items:center;gap:0.4rem;
+                        padding:0.4rem 0.9rem;background:#fef2f2;
+                        color:#dc2626;border-radius:10px;font-size:0.8rem;font-weight:600;
+                        text-decoration:none;border:1px solid #fecaca;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>`;
+            } else {
+                navAuth.innerHTML = `
+                    <a href="/login" style="display:flex;align-items:center;gap:0.4rem;
+                        padding:0.4rem 0.9rem;background:#f1f5f9;
+                        color:#334155;border-radius:10px;font-size:0.8rem;font-weight:600;
+                        text-decoration:none;border:1px solid #e2e8f0;">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="/register" style="display:flex;align-items:center;gap:0.4rem;
+                        padding:0.4rem 0.9rem;background:#2563eb;
+                        color:#fff;border-radius:10px;font-size:0.8rem;font-weight:600;
+                        text-decoration:none;box-shadow:0 2px 8px rgba(37,99,235,0.3);">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>`;
+            }
+        } catch(e) { console.log('Auth check failed'); }
+    }
+    checkAuthState();
+
+    function toggleFaqPanel() {
+        const body    = document.getElementById('faq-panel-body');
+        const chevron = document.getElementById('faq-panel-chevron');
+        const isOpen  = body.style.maxHeight && body.style.maxHeight !== '0px';
+        body.style.maxHeight = isOpen ? '0px'    : '5000px';
+        body.style.opacity   = isOpen ? '0'      : '1';
+        chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+
+    function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+    function toggleMobileNav() { alert('Use navigation links above'); }
+
+    function toggleRefs() {
+        const body    = document.getElementById('refs-body');
+        const chevron = document.getElementById('refs-chevron');
+        const isOpen  = body.style.maxHeight && body.style.maxHeight !== '0px';
+        body.style.maxHeight = isOpen ? '0px'    : '4000px';
+        body.style.opacity   = isOpen ? '0'      : '1';
+        chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+
+    window.addEventListener('scroll', () => {
+        const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+        document.getElementById('progress-bar').style.width = pct + '%';
+        const bt = document.getElementById('back-top');
+        window.scrollY > 400 ? bt.classList.add('visible') : bt.classList.remove('visible');
+        const nav = document.getElementById('mainNav');
+        window.scrollY > 50 ? nav.classList.add('scrolled') : nav.classList.remove('scrolled');
+    });
+    
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((e) => { e.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.1 });
+    reveals.forEach(r => observer.observe(r));
+    
+    document.querySelectorAll('input').forEach(i => i.addEventListener('keypress', e => { if(e.key === 'Enter') predictDemo(); }));
+    
+    // ── Type Card Toggle ─────────────────────────────────────────────────────
+    function toggleTypeCard(id) {
+        const body  = document.getElementById(id);
+        const chev  = document.getElementById('chev-' + id);
+        const isOpen = body.classList.contains('open');
+        // Close all first
+        document.querySelectorAll('.type-expand-body').forEach(b => b.classList.remove('open'));
+        document.querySelectorAll('.type-chevron').forEach(c => c.style.transform = 'rotate(0deg)');
+        document.querySelectorAll('.type-card-expand').forEach(c => c.classList.remove('active'));
+        if (!isOpen) {
+            body.classList.add('open');
+            chev.style.transform = 'rotate(180deg)';
+            body.closest('.type-card-expand').classList.add('active');
+        }
+    }
+
+    // ── FAQ Toggle ────────────────────────────────────────────────────────────
+    function toggleFaq(el) {
+        const isOpen = el.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(f => {
+            f.classList.remove('open');
+            f.querySelector('.faq-icon').className = 'fas fa-plus faq-icon';
+        });
+        if (!isOpen) {
+            el.classList.add('open');
+            el.querySelector('.faq-icon').className = 'fas fa-minus faq-icon';
+        }
+    }
+
+    // ── Chatbot ───────────────────────────────────────────────────────────────
+    // ── Detect Arabic ─────────────────────────────────────────────────────────
+    // ── Language Detection ───────────────────────────────────────────────────
+    function isArabic(text) {
+        return /[\u0600-\u06FF]/.test(text);
+    }
+
+    // ── Fuzzy match: checks if ANY keyword fragment appears in message ────────
+    function fuzzyMatch(msg, keywords) {
+        const m = msg.toLowerCase().replace(/[أإآا]/g,'ا').replace(/[ةه]/g,'ه').replace(/[يى]/g,'ي');
+        for (const kw of keywords) {
+            const k = kw.toLowerCase().replace(/[أإآا]/g,'ا').replace(/[ةه]/g,'ه').replace(/[يى]/g,'ي');
+            // Direct substring match
+            if (m.includes(k)) return true;
+            // Partial match: if keyword >= 4 chars, check if 80% of it matches
+            if (k.length >= 4) {
+                const partial = k.slice(0, Math.ceil(k.length * 0.8));
+                if (m.includes(partial)) return true;
+            }
+            // Split keywords with spaces and check each word
+            const kWords = k.split(/\s+/);
+            if (kWords.length > 1 && kWords.some(w => w.length >= 3 && m.includes(w))) return true;
+        }
+        return false;
+    }
+
+    // ── Full Bilingual Knowledge Base (60+ topics) ────────────────────────────
+    const CHAT_KB = [
+        // ── Greetings ──────────────────────────────────────────────────────────
+        { k:['hello','hi','hey','help','start','good morning','good evening','مرحبا','مرحب','السلام','هلا','اهلا','أهلاً','صباح','مساء','كيف','ازيك','ازيك','هاي','هلو','وعليكم','مرحبتين','شو','ايش','ما اخبار','كيف حالك'],
+          e:'Hello! 👋 I\'m DiabetesAI Assistant. Ask me anything about diabetes, symptoms, treatment, nutrition, or the platform. I also understand Arabic!',
+          a:'مرحباً! 👋 أنا مساعد DiabetesAI. اسألني أي شيء عن السكري، الأعراض، العلاج، التغذية، أو المنصة. بإمكانك الكتابة بالعربي أو الإنجليزي!' },
+
+        // ── What is diabetes ───────────────────────────────────────────────────
+        { k:['what is diabetes','define diabetes','diabetes meaning','explain diabetes','tell me about diabetes','ما هو السكري','ما هو مرض','عرف السكري','اشرح السكري','السكري ايه','السكري إيه','مرض السكر','داء السكري','عن السكري','السكر مرض'],
+          e:'Diabetes mellitus is a chronic disease where blood glucose is too high because the body cannot produce or use insulin properly. There are 3 types: Type 1 (autoimmune), Type 2 (lifestyle-related), and Gestational (during pregnancy).',
+          a:'مرض السكري هو مرض مزمن يتميز بارتفاع الجلوكوز في الدم بسبب عدم قدرة الجسم على إنتاج الأنسولين أو استخدامه. ثلاثة أنواع: النوع الأول (مناعي)، النوع الثاني (نمط حياة)، وسكري الحمل.' },
+
+        // ── Type 1 ────────────────────────────────────────────────────────────
+        { k:['type 1','type1','t1 diabetes','juvenile diabetes','النوع الأول','النوع 1','سكري نوع اول','سكري اطفال','نوع 1','نوع اول'],
+          e:'Type 1 diabetes is an autoimmune disease — the immune system destroys insulin-producing beta cells. It affects ~10% of cases, requires lifelong insulin therapy, and usually starts in childhood or young adulthood.',
+          a:'سكري النوع الأول مرض مناعي ذاتي — الجهاز المناعي يدمر خلايا بيتا المنتجة للأنسولين. يصيب ~10% من الحالات ويتطلب علاجاً بالأنسولين مدى الحياة، ويبدأ عادةً في الطفولة.' },
+
+        // ── Type 2 ────────────────────────────────────────────────────────────
+        { k:['type 2','type2','t2 diabetes','adult diabetes','النوع الثاني','النوع 2','سكري نوع ثاني','نوع 2','نوع ثاني','السكري الثاني','الثاني'],
+          e:'Type 2 diabetes involves insulin resistance — cells don\'t respond to insulin properly. It accounts for ~90% of cases, is strongly linked to obesity and inactivity, and can often be managed or even reversed with lifestyle changes.',
+          a:'سكري النوع الثاني يتسم بمقاومة الأنسولين — الخلايا لا تستجيب له بشكل صحيح. يمثل ~90% من الحالات، مرتبط بالسمنة وقلة النشاط، ويمكن إدارته أو عكسه بتغيير نمط الحياة.' },
+
+        // ── Gestational ───────────────────────────────────────────────────────
+        { k:['gestational','pregnancy diabetes','سكري الحمل','سكر الحمل','حمل','الحمل','حوامل','الحامل'],
+          e:'Gestational diabetes occurs during pregnancy when hormones interfere with insulin. It usually resolves after delivery but raises the mother\'s lifetime risk of Type 2 by ~50%.',
+          a:'سكري الحمل يحدث أثناء الحمل لأن الهرمونات تتعارض مع الأنسولين. يختفي بعد الولادة عادةً لكنه يرفع خطر الأم للإصابة بالنوع الثاني مستقبلاً بنسبة 50%.' },
+
+        // ── Symptoms ──────────────────────────────────────────────────────────
+        { k:['symptom','sign','warning sign','indication','feel','thirst','urination','fatigue','blurr','أعراض','علامات','اعراض','علامه','تحذير','عطش','تبول','تعب','ارهاق','دوخة','ضعف','رؤية','عيني','بصر'],
+          e:'Key diabetes symptoms: excessive thirst 💧, frequent urination 🚽, unexplained weight loss, constant fatigue, blurred vision, slow-healing wounds, tingling in hands/feet, and frequent infections.',
+          a:'أعراض السكري الرئيسية: عطش شديد 💧، كثرة التبول 🚽، فقدان وزن غير مبرر، تعب مستمر، ضبابية الرؤية، بطء التئام الجروح، تنميل في اليدين والقدمين، وتكرر الإصابة بالعدوى.' },
+
+        // ── Glucose levels ────────────────────────────────────────────────────
+        { k:['glucose','blood sugar','blood glucose','sugar level','normal sugar','fasting','السكر','جلوكوز','نسبة السكر','سكر الدم','معدل السكر','سكر طبيعي','صائم','الصيام'],
+          e:'Blood glucose ranges: Normal fasting: 70–99 mg/dL | Prediabetes: 100–125 | Diabetes: ≥126 mg/dL. Post-meal (2hrs): Normal <140 | Prediabetes 140–199 | Diabetes ≥200.',
+          a:'مستويات سكر الدم: طبيعي صائماً: 70–99 ملغ/ديسيلتر | مقدمات السكري: 100–125 | السكري: 126+ . بعد الأكل بساعتين: طبيعي أقل من 140 | مقدمات السكري 140–199 | السكري 200+.' },
+
+        // ── BMI ───────────────────────────────────────────────────────────────
+        { k:['bmi','body mass index','weight','obesity','overweight','مؤشر','كتلة الجسم','الوزن','وزن','سمنة','بدانة','نحافة','ثقيل'],
+          e:'BMI = weight(kg) ÷ height(m)². Underweight: <18.5 | Normal: 18.5–24.9 | Overweight: 25–29.9 | Obese: ≥30. High BMI is the #1 modifiable risk factor for Type 2 diabetes.',
+          a:'مؤشر كتلة الجسم = الوزن(كغ) ÷ الطول(م)². نحيل: أقل من 18.5 | طبيعي: 18.5–24.9 | زيادة وزن: 25–29.9 | سمنة: 30+. الوزن الزائد هو أبرز عامل خطر قابل للتعديل لسكري النوع الثاني.' },
+
+        // ── Insulin ───────────────────────────────────────────────────────────
+        { k:['insulin','أنسولين','انسولين','هرمون','البنكرياس','بنكرياس'],
+          e:'Insulin is a hormone made by the pancreas that allows glucose into cells. Type 1: no insulin produced. Type 2: insulin made but cells resist it. Without insulin, glucose stays in blood and causes damage.',
+          a:'الأنسولين هرمون ينتجه البنكرياس يتيح للجلوكوز الدخول للخلايا. النوع الأول: لا يُنتج أنسولين. النوع الثاني: يُنتج لكن الخلايا تقاومه. بدون أنسولين يتراكم الجلوكوز في الدم ويسبب الأضرار.' },
+
+        // ── HbA1c ─────────────────────────────────────────────────────────────
+        { k:['hba1c','a1c','hemoglobin','glycated','hb a1c','الهيموجلوبين','تحليل a1c','a1c تحليل','السكر التراكمي','تراكمي'],
+          e:'HbA1c reflects average blood glucose over 2–3 months. Normal: <5.7% | Prediabetes: 5.7–6.4% | Diabetes: ≥6.5%. It\'s the gold-standard test — one check covers 3 months of control.',
+          a:'HbA1c يعكس متوسط السكر خلال 2–3 أشهر. طبيعي: أقل من 5.7% | مقدمات السكري: 5.7–6.4% | السكري: 6.5%+. هو الاختبار الذهبي — فحص واحد يغطي 3 أشهر من التحكم.' },
+
+        // ── Blood pressure ────────────────────────────────────────────────────
+        { k:['blood pressure','hypertension','bp','ضغط الدم','ضغط','ارتفاع الضغط','الضغط'],
+          e:'Normal diastolic BP: <80 mmHg. Elevated: 80–89. High (hypertension): ≥90. Diabetes + high BP together dramatically increase risk of heart attack, stroke, and kidney failure.',
+          a:'ضغط الدم الانبساطي الطبيعي: أقل من 80 ملم زئبق. مرتفع نسبياً: 80–89. مرتفع: 90+. السكري مع ارتفاع الضغط يرفعان بشكل كبير خطر النوبة القلبية والسكتة الدماغية والفشل الكلوي.' },
+
+        // ── Diet / Nutrition ──────────────────────────────────────────────────
+        { k:['diet','eat','food','nutrition','meal','carb','protein','fat','calorie','what to eat','أكل','غذاء','تغذية','نظام غذائي','وجبة','كارب','بروتين','دهون','سعرات','ماذا آكل','اكل','طعام','وجبات'],
+          e:'Diabetes-friendly eating: ✅ Whole grains, leafy greens, lean proteins, nuts, berries, legumes. ❌ Avoid: refined sugar, white bread/rice, sugary drinks, fried food, processed snacks. Eat at consistent times and watch portion sizes.',
+          a:'تغذية مناسبة للسكري: ✅ حبوب كاملة، خضروات ورقية، بروتينات خالية من الدهون، مكسرات، توت، بقوليات. ❌ تجنب: السكر المكرر، الخبز/الأرز الأبيض، المشروبات السكرية، الأطعمة المقلية، الوجبات الخفيفة المعالجة.' },
+
+        // ── Exercise ──────────────────────────────────────────────────────────
+        { k:['exercise','workout','physical activity','sport','walk','swim','gym','رياضة','تمرين','نشاط','مشي','سباحة','جيم','تمارين','رياضي','حركة'],
+          e:'Exercise is powerful medicine for diabetes. It lowers blood sugar by increasing insulin sensitivity. Aim for 150 min/week of moderate activity: brisk walking 🚶, swimming 🏊, cycling 🚴, or strength training 🏋️.',
+          a:'الرياضة دواء قوي للسكري. تخفض السكر بزيادة حساسية الأنسولين. استهدف 150 دقيقة أسبوعياً: مشي سريع 🚶، سباحة 🏊، ركوب دراجة 🚴، أو تمارين مقاومة 🏋️.' },
+
+        // ── Prevention ────────────────────────────────────────────────────────
+        { k:['prevent','prevention','avoid','risk','reduce risk','الوقاية','وقاية','منع','تجنب','خطر','تقليل'],
+          e:'Preventing Type 2 diabetes: 🏃 Exercise regularly | 🥗 Eat balanced meals | ⚖️ Maintain healthy weight | 🚭 Don\'t smoke | 💤 Sleep 7–8 hours | 🏥 Get regular screenings especially if family history.',
+          a:'الوقاية من سكري النوع الثاني: 🏃 رياضة منتظمة | 🥗 نظام غذائي متوازن | ⚖️ وزن صحي | 🚭 لا تدخن | 💤 نوم 7–8 ساعات | 🏥 فحوصات دورية خاصةً مع تاريخ عائلي.' },
+
+        // ── Treatment / Medicine ──────────────────────────────────────────────
+        { k:['treatment','medicine','medication','metformin','cure','manage','drug','tablet','pill','علاج','دواء','دواء','ميتفورمين','شفاء','علاج','قرص','حبة','ادوية','دواءء'],
+          e:'Type 1: insulin injections or pump (lifelong). Type 2: starts with lifestyle changes, then oral medications (e.g. Metformin), and insulin if needed. No full cure exists for Type 1; Type 2 can go into remission with weight loss.',
+          a:'النوع الأول: حقن الأنسولين أو المضخة (مدى الحياة). النوع الثاني: يبدأ بتغيير نمط الحياة، ثم أدوية فموية (مثل ميتفورمين)، ثم أنسولين إن لزم. لا يوجد علاج كامل للنوع الأول؛ النوع الثاني يمكن أن يدخل في مرحلة هدوء مع إنقاص الوزن.' },
+
+        // ── Complications ─────────────────────────────────────────────────────
+        { k:['complication','kidney','retinopathy','neuropathy','heart','stroke','blind','amputation','مضاعفات','كلى','عين','قلب','سكتة','عمى','بتر','اعصاب','اعتلال'],
+          e:'Uncontrolled diabetes complications: 🫀 Heart disease | 🫘 Kidney failure (nephropathy) | 👁️ Vision loss (retinopathy) | 🦶 Nerve damage (neuropathy) | 🦷 Gum disease | 🦵 Amputation risk. Good glucose control prevents most!',
+          a:'مضاعفات السكري غير المنضبط: 🫀 أمراض القلب | 🫘 فشل كلوي | 👁️ فقدان البصر | 🦶 تلف الأعصاب | 🦷 أمراض اللثة | 🦵 خطر البتر. التحكم الجيد بالسكر يمنع معظمها!' },
+
+        // ── Stress / Mental health ────────────────────────────────────────────
+        { k:['stress','anxiety','mental','depress','emotion','ضغط نفسي','توتر','قلق','اكتئاب','مشاعر','نفسي','ذهني'],
+          e:'Stress raises cortisol which directly spikes blood sugar. Techniques that help: 🧘 meditation, 🌳 nature walks, 😴 good sleep, 👥 social support, 🎵 music, and 📓 journaling. Mental health is part of diabetes management.',
+          a:'التوتر يرفع الكورتيزول الذي يرفع السكر مباشرةً. تقنيات مفيدة: 🧘 تأمل، 🌳 المشي في الطبيعة، 😴 نوم جيد، 👥 دعم اجتماعي، 🎵 موسيقى، 📓 يوميات. الصحة النفسية جزء من إدارة السكري.' },
+
+        // ── Sleep ─────────────────────────────────────────────────────────────
+        { k:['sleep','rest','insomnia','نوم','نعاس','ارق','راحة','ساعات النوم'],
+          e:'Sleep is underrated in diabetes control. Less than 7 hours increases insulin resistance by up to 23% and raises blood sugar. Consistent 7–8 hours of quality sleep helps regulate glucose and hormones.',
+          a:'النوم مهم جداً لضبط السكري. أقل من 7 ساعات يزيد مقاومة الأنسولين 23% ويرفع السكر. النوم المنتظم 7–8 ساعات يساعد في تنظيم الجلوكوز والهرمونات.' },
+
+        // ── Hypoglycemia ──────────────────────────────────────────────────────
+        { k:['hypoglycemia','low sugar','low glucose','hypo','انخفاض السكر','سكر منخفض','هبوط السكر','هبوط','نقص سكر'],
+          e:'Hypoglycemia (low blood sugar <70 mg/dL): symptoms include shakiness, sweating, confusion, dizziness. Treat immediately with 15g fast carbs: juice, glucose tablets, or 3–4 glucose sweets. Recheck after 15 min.',
+          a:'انخفاض السكر (أقل من 70 ملغ/ديسيلتر): الأعراض تشمل الرعشة، التعرق، الارتباك، الدوخة. عالجه فوراً بـ 15 جم كربوهيدرات سريعة: عصير، أقراص جلوكوز، أو 3–4 حلويات جلوكوز. أعد الفحص بعد 15 دقيقة.' },
+
+        // ── Hyperglycemia ─────────────────────────────────────────────────────
+        { k:['hyperglycemia','high sugar','high glucose','hyper','ارتفاع السكر','سكر مرتفع','زيادة السكر'],
+          e:'Hyperglycemia (high blood sugar >180 mg/dL after meals): drink water, exercise if no ketones, take medication as prescribed. Symptoms: thirst, frequent urination, fatigue, blurred vision. Chronic high sugar causes organ damage.',
+          a:'ارتفاع السكر (أكثر من 180 ملغ/ديسيلتر بعد الأكل): اشرب ماء، مارس الرياضة إن لم تكن هناك كيتونات، خذ دواءك. الأعراض: عطش، تبول متكرر، تعب، ضبابية الرؤية. الارتفاع المزمن يتلف الأعضاء.' },
+
+        // ── Ketones / DKA ─────────────────────────────────────────────────────
+        { k:['ketone','dka','diabetic ketoacidosis','كيتون','حماض','كيتوزيس'],
+          e:'Diabetic Ketoacidosis (DKA) is a dangerous complication mainly in Type 1 where the body burns fat for fuel producing ketones. Symptoms: fruity breath, nausea, vomiting, abdominal pain. Requires emergency medical care.',
+          a:'الحماض الكيتوني (DKA) مضاعفة خطيرة خاصةً في النوع الأول، حيث يحرق الجسم الدهون منتجاً كيتونات. الأعراض: رائحة الفم الفواكهية، غثيان، قيء، آلام بطن. يستلزم رعاية طبية طارئة.' },
+
+        // ── Prediabetes ───────────────────────────────────────────────────────
+        { k:['prediabetes','pre-diabetes','borderline','مقدمات السكري','قبل السكري','حدودي'],
+          e:'Prediabetes: fasting glucose 100–125 mg/dL or HbA1c 5.7–6.4%. It\'s reversible! Losing 5–7% of body weight and exercising 150 min/week reduces progression to Type 2 by 58% (DPP study).',
+          a:'مقدمات السكري: سكر صائم 100–125 أو HbA1c 5.7–6.4%. يمكن عكسها! إنقاص 5–7% من الوزن وممارسة 150 دقيقة رياضة أسبوعياً يخفض الانتقال للنوع الثاني بنسبة 58% (دراسة DPP).' },
+
+        // ── AI model ──────────────────────────────────────────────────────────
+        { k:['ai','model','accurate','accuracy','prediction','machine learning','gradient','pima','algorithm','الذكاء الاصطناعي','نموذج','دقة','تنبؤ','خوارزمية','موديل'],
+          e:'Our AI uses GradientBoosting Classifier trained on the Pima Indians Diabetes Dataset (768 patients). It achieves 87–95% accuracy using 8 clinical inputs. It\'s an educational screening tool — not a medical diagnosis.',
+          a:'نموذجنا يستخدم GradientBoosting مدرب على مجموعة بيانات Pima Indians (768 مريضة). يحقق دقة 87–95% باستخدام 8 مدخلات سريرية. هو أداة فرز توعوية وليس تشخيصاً طبياً.' },
+
+        // ── Pima dataset ──────────────────────────────────────────────────────
+        { k:['pima','dataset','data','training','بيانات','داتاسيت','تدريب'],
+          e:'The Pima Indians Diabetes Dataset is a public medical dataset of 768 women from the Pima Indian heritage (Arizona, USA). It contains 8 clinical features and is one of the most widely used benchmarks in medical AI research.',
+          a:'مجموعة بيانات Pima Indians للسكري قاعدة بيانات طبية عامة لـ 768 امرأة من أصل Pima الهندي (أريزونا، الولايات المتحدة). تحتوي على 8 ميزات سريرية وهي من أكثر المعايير استخداماً في أبحاث الذكاء الاصطناعي الطبي.' },
+
+        // ── How to use platform ───────────────────────────────────────────────
+        { k:['how to use','how do i','how does','tutorial','guide','كيف أستخدم','كيف استخدم','كيف','طريقة','ارشادات','دليل','شرح'],
+          e:'How to use DiabetesAI: 1️⃣ Create a free account → 2️⃣ Fill in your 8 health measurements in the form → 3️⃣ Click "Analyze & Diagnose" → 4️⃣ Get AI prediction + personalized nutrition, exercise, and wellness plan.',
+          a:'كيفية استخدام DiabetesAI: 1️⃣ أنشئ حساباً مجانياً → 2️⃣ أدخل قياساتك الصحية الـ 8 في النموذج → 3️⃣ اضغط "Analyze & Diagnose" → 4️⃣ احصل على تنبؤ AI + خطة تغذية وتمارين ورعاية شخصية.' },
+
+        // ── Account / Login ───────────────────────────────────────────────────
+        { k:['account','login','register','sign up','sign in','password','حساب','تسجيل','دخول','كلمة مرور','اشتراك','سجل'],
+          e:'You need a free account to run analyses and save results. Click "Register" in the top nav. Passwords are SHA-256 encrypted for security. Login and your analysis history is saved to your personal dashboard.',
+          a:'تحتاج حساباً مجانياً لإجراء التحليلات وحفظ النتائج. اضغط "Register" في شريط التنقل. كلمات المرور مشفرة بـ SHA-256. سجّل دخولك وسيُحفظ تاريخ تحليلاتك في لوحتك الشخصية.' },
+
+        // ── Privacy / Data security ───────────────────────────────────────────
+        { k:['privacy','secure','safe','data','personal','بيانات','خصوصية','أمان','امان','شخصية','آمن'],
+          e:'Your data is stored in a local SQLite database. Passwords are SHA-256 hashed (never stored in plain text). Your health data is only accessible when you\'re logged in. We don\'t share data with third parties.',
+          a:'بياناتك مخزنة في قاعدة بيانات SQLite محلية. كلمات المرور مشفرة بـ SHA-256 (لا تُخزن كنص عادي). بياناتك الصحية لا يصل إليها إلا أنت عند تسجيل دخولك. لا نشارك البيانات مع أطراف ثالثة.' },
+
+        // ── Survey ────────────────────────────────────────────────────────────
+        { k:['survey','questionnaire','feedback','rate','satisfaction','استبيان','استطلاع','رأي','تقييم','رضا'],
+          e:'After running at least one analysis, you\'ll be asked to complete a 10-question satisfaction survey before logging out. It covers usability, accuracy, design, and data security. Your honest feedback helps us improve!',
+          a:'بعد إجراء تحليل واحد على الأقل، ستُطلب منك ملء استبيان رضا من 10 أسئلة قبل تسجيل الخروج. يغطي سهولة الاستخدام، الدقة، التصميم، وأمان البيانات. ملاحظاتك الصادقة تساعدنا على التحسين!' },
+
+        // ── Dashboard ─────────────────────────────────────────────────────────
+        { k:['dashboard','history','results','profile','لوحة','سجل','تاريخ','نتائج','ملف شخصي'],
+          e:'Your dashboard at /dashboard shows: total analyses, diabetic vs non-diabetic results, login history, last glucose and BMI readings, and a full table of all your past analyses with dates and risk levels.',
+          a:'لوحتك في /dashboard تُظهر: إجمالي التحليلات، نتائج السكري مقابل الطبيعي، سجل تسجيل الدخول، آخر قراءات الجلوكوز والـ BMI، وجدول كامل بكل تحليلاتك السابقة مع التواريخ ومستويات الخطر.' },
+
+        // ── Doctor / Medical advice ────────────────────────────────────────────
+        { k:['doctor','physician','specialist','medical advice','hospital','دكتور','طبيب','استشارة','مستشفى','تشخيص طبي'],
+          e:'DiabetesAI is an educational awareness tool — it does NOT replace a doctor. Always consult a licensed physician for diagnosis, treatment decisions, and medication changes. This tool helps you understand your risk, not diagnose disease.',
+          a:'DiabetesAI أداة توعوية — لا تحل محل الطبيب إطلاقاً. استشر دائماً طبيباً مرخصاً للتشخيص وقرارات العلاج والأدوية. هذه الأداة تساعدك على فهم خطرك، لا تشخيص المرض.' },
+
+        // ── Myths ─────────────────────────────────────────────────────────────
+        { k:['myth','fact','misconception','true or false','خرافة','حقيقة','اسطورة','صح ولا غلط','صحيح'],
+          e:'Common diabetes myths: ❌ "Eating sugar causes diabetes" (False — it\'s multifactorial) | ❌ "Diabetics can never eat sweets" (False — in moderation) | ✅ "Exercise lowers sugar without medication" (True!) | ✅ "Type 2 can go into remission" (True!)',
+          a:'خرافات السكري الشائعة: ❌ "السكر يسبب السكري" (خطأ — متعدد الأسباب) | ❌ "مريض السكري لا يأكل حلويات أبداً" (خطأ — بكميات معتدلة) | ✅ "الرياضة تخفض السكر بدون دواء" (صحيح!) | ✅ "النوع الثاني يدخل في هدوء" (صحيح!)' },
+
+        // ── Skin thickness ────────────────────────────────────────────────────
+        { k:['skin thickness','triceps','skinfold','سمك الجلد','دهون الجلد'],
+          e:'Skin thickness (tricep skinfold) in the AI model measures subcutaneous fat — fat stored under the skin. Normal range: 10–40mm. Higher values indicate more body fat, which is associated with insulin resistance.',
+          a:'سمك الجلد (طية الجلد الثلاثية الرؤوس) في النموذج تقيس الدهون تحت الجلد. المعدل الطبيعي: 10–40 ملم. القيم المرتفعة تدل على دهون جسم أكثر، مما يرتبط بمقاومة الأنسولين.' },
+
+        // ── Diabetes Pedigree Function ────────────────────────────────────────
+        { k:['pedigree','dpf','genetic','hereditary','family history','وراثة','وراثي','تاريخ عائلي','عائلي','جيني'],
+          e:'Diabetes Pedigree Function (DPF) measures genetic diabetes risk based on family history. Range: 0.001–2.5. Higher values = stronger family diabetes history. A DPF of 0.5 means moderate genetic predisposition.',
+          a:'معامل وراثة السكري (DPF) يقيس الخطر الجيني بناءً على التاريخ العائلي. النطاق: 0.001–2.5. القيم الأعلى = تاريخ عائلي أقوى للسكري. DPF بقيمة 0.5 يعني استعداداً جينياً متوسطاً.' },
+
+        // ── Pregnancies input ─────────────────────────────────────────────────
+        { k:['pregnancies','pregnant','pregnancy number','حمل','عدد الحمل','مرات الحمل'],
+          e:'The pregnancies input counts how many times a person has been pregnant. This feature matters because gestational diabetes during previous pregnancies significantly raises the risk of developing Type 2 diabetes later.',
+          a:'خانة الحمل تحسب عدد مرات الحمل السابقة. هذه الميزة مهمة لأن سكري الحمل في الحمولات السابقة يرفع بشكل كبير خطر الإصابة بالنوع الثاني لاحقاً.' },
+
+        // ── Thanks ────────────────────────────────────────────────────────────
+        { k:['thank','thanks','great','perfect','awesome','شكر','شكراً','شكرا','ممتاز','رائع','جميل','عظيم','تمام','تسلم','يسلمو'],
+          e:'You\'re welcome! 😊 Feel free to ask anything else about diabetes or the platform.',
+          a:'على الرحب والسعة! 😊 لا تتردد في السؤال عن أي شيء آخر يتعلق بالسكري أو المنصة.' },
+    ];
+
+    function isArabic(text) { return /[\u0600-\u06FF]/.test(text); }
+
+    let chatOpen = false;
+
+    function toggleChat() {
+        chatOpen = !chatOpen;
+        const win = document.getElementById('chatWindow');
+        const btn = document.getElementById('chatBtn');
+        win.style.display = chatOpen ? 'flex' : 'none';
+        btn.innerHTML = chatOpen ? '<i class="fas fa-times"></i>' : '<i class="fas fa-comment-medical"></i>';
+        if (chatOpen && document.getElementById('chatMessages').children.length === 0) {
+            appendChat('bot', 'Hi! 👋 I\'m DiabetesAI Assistant. Ask me anything about diabetes, symptoms, nutrition, or the platform. أستطيع الإجابة بالعربي أيضاً!');
+        }
+    }
+
+    function appendChat(who, text) {
+        const msgs = document.getElementById('chatMessages');
+        const div  = document.createElement('div');
+        div.className = 'chat-msg chat-' + who;
+        div.style.direction = isArabic(text) ? 'rtl' : 'ltr';
+        div.textContent = text;
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    async function sendChat() {
+        const inp = document.getElementById('chatInput');
+        const msg = inp.value.trim();
+        if (!msg) return;
+
+        appendChat('user', msg);
+        inp.value = '';
+        const arabic = isArabic(msg);
+
+        const typingId = 'typing-' + Date.now();
+        const msgs = document.getElementById('chatMessages');
+        const typingDiv = document.createElement('div');
+        typingDiv.id = typingId;
+        typingDiv.className = 'chat-msg chat-bot';
+        typingDiv.style.direction = 'ltr';
+        typingDiv.innerHTML = '<i class="fas fa-circle" style="font-size:6px;animation:bounce 0.6s infinite;"></i> <i class="fas fa-circle" style="font-size:6px;animation:bounce 0.6s 0.15s infinite;"></i> <i class="fas fa-circle" style="font-size:6px;animation:bounce 0.6s 0.3s infinite;"></i>';
+        msgs.appendChild(typingDiv);
+        msgs.scrollTop = msgs.scrollHeight;
+
+        let reply = null;
+
+        try {
+            console.log('Sending chat message to /chat:', msg);
+
+            const res = await fetch('/chat', {
+                method: 'POST',
+                cache: 'no-store',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
+                },
+                body: JSON.stringify({ message: msg })
+            });
+
+            const data = await res.json();
+            console.log('Chat backend response:', data);
+
+            if (data.status === 'success' && data.reply) {
+                reply = data.reply;
+            } else if (data.status === 'quota_exceeded') {
+                for (const item of CHAT_KB) {
+                    if (fuzzyMatch(msg, item.k)) {
+                        reply = arabic ? item.a : item.e;
+                        break;
+                    }
+                }
+                if (!reply) {
+                    reply = arabic
+                        ? 'ضغط استخدام Gemini عالي حاليًا. اسألني عن السكري أو المنصة وسأحاول الرد من القاعدة المحلية.'
+                        : 'Gemini quota is temporarily exhausted. Ask about diabetes or the platform and I will try local responses.';
+                }
+            } else {
+                reply = data && data.message
+                    ? data.message
+                    : (arabic
+                        ? 'لم يصل رد واضح من السيرفر. راجع التيرمنال في Flask.'
+                        : 'No clear response from the server. Check the Flask terminal.');
+            }
+        } catch (e) {
+            console.error('Chat connection error:', e);
+            reply = arabic
+                ? 'حصل خطأ في الاتصال بالسيرفر. تأكد أن Flask شغال على نفس الرابط ثم جرّب Ctrl+F5.'
+                : 'Server connection error. Make sure Flask is running on the same URL, then try Ctrl+F5.';
+        }
+
+        const td = document.getElementById(typingId);
+        if (td) td.remove();
+
+        appendChat('bot', reply);
+    }
+
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && document.activeElement.id === 'chatInput') sendChat();
+    });
+</script>
+
+<!-- ── Chatbot Widget ── -->
+<div id="chatWindow" style="display:none;position:fixed;bottom:90px;right:1.5rem;
+    width:320px;height:420px;background:#fff;border-radius:20px;z-index:9999;
+    box-shadow:0 20px 60px rgba(0,0,0,0.18);border:1px solid #e0e7ff;
+    flex-direction:column;overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#2563eb,#1e40af);padding:1rem;
+                display:flex;align-items:center;gap:0.7rem;">
+        <div style="width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:10px;
+                    display:flex;align-items:center;justify-content:center;">
+            <i class="fas fa-robot" style="color:#fff;font-size:1rem;"></i>
+        </div>
+        <div>
+            <div style="color:#fff;font-weight:700;font-size:0.9rem;">DiabetesAI Assistant</div>
+            <div style="color:rgba(255,255,255,0.7);font-size:0.72rem;">Ask me anything about diabetes</div>
+        </div>
+        <div style="margin-left:auto;width:8px;height:8px;background:#4ade80;border-radius:50%;"></div>
+    </div>
+    <div id="chatMessages" style="flex:1;overflow-y:auto;padding:1rem;
+                                   display:flex;flex-direction:column;gap:0.6rem;"></div>
+    <div style="padding:0.8rem;border-top:1px solid #e2e8f0;display:flex;gap:0.5rem;">
+        <input id="chatInput" type="text" placeholder="Ask about diabetes..."
+               style="flex:1;padding:0.55rem 0.8rem;border:1.5px solid #e0e7ff;border-radius:10px;
+                      font-family:inherit;font-size:0.83rem;outline:none;color:#334155;">
+        <button onclick="sendChat()" style="width:36px;height:36px;background:#2563eb;border:none;
+                border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+            <i class="fas fa-paper-plane" style="color:#fff;font-size:0.8rem;"></i>
+        </button>
+    </div>
+</div>
+
+<button id="chatBtn" onclick="toggleChat()"
+    style="position:fixed;bottom:1.5rem;right:1.5rem;width:56px;height:56px;
+           background:linear-gradient(135deg,#2563eb,#1e40af);border:none;border-radius:50%;
+           cursor:pointer;box-shadow:0 8px 25px rgba(37,99,235,0.4);z-index:9999;
+           display:flex;align-items:center;justify-content:center;transition:all 0.3s;color:#fff;">
+    <i class="fas fa-comment-medical" style="font-size:1.3rem;"></i>
+</button>
+
+<style>
+.type-card-expand { cursor:pointer; transition:all 0.3s; }
+.type-card-expand.active { border-color:var(--primary) !important; box-shadow:0 0 30px var(--primary-glow) !important; transform:translateY(-4px); }
+.type-card-header { display:flex; align-items:center; gap:0.8rem; margin-bottom:0.8rem; }
+.type-chevron { color:var(--text-light); transition:transform 0.3s; font-size:0.9rem; flex-shrink:0; }
+.type-expand-body { max-height:0; overflow:hidden; transition:max-height 0.5s ease, opacity 0.4s ease; opacity:0; }
+.type-expand-body.open { max-height:600px; opacity:1; }
+.type-expand-inner { padding-top:1rem; border-top:1px solid var(--border-light); margin-top:0.8rem; }
+.type-qa-title { font-size:0.78rem; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.8rem; display:flex; align-items:center; gap:0.4rem; }
+.type-qa-list { display:flex; flex-direction:column; gap:0.7rem; }
+.type-qa-item { background:#f8faff; border-radius:12px; padding:0.8rem; border-left:3px solid var(--primary); }
+.type-q { font-size:0.82rem; font-weight:700; color:var(--heading); margin-bottom:0.3rem; }
+.type-a { font-size:0.8rem; color:var(--text-light); line-height:1.5; }
+.faq-group-title { font-size:0.78rem; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:1px; margin-bottom:0.8rem; display:flex; align-items:center; gap:0.5rem; }
+.faq-item { background:#fff; border:1.5px solid var(--border-light); border-radius:16px; margin-bottom:0.7rem; overflow:hidden; cursor:pointer; transition:all 0.3s; }
+.faq-item:hover { border-color:#93c5fd; box-shadow:0 4px 15px rgba(37,99,235,0.08); }
+.faq-item.open { border-color:var(--primary); }
+.faq-q { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.2rem; font-size:0.88rem; font-weight:600; color:var(--heading); gap:1rem; }
+.faq-icon { color:var(--primary); flex-shrink:0; transition:transform 0.3s; }
+.faq-a { max-height:0; overflow:hidden; transition:max-height 0.4s ease, padding 0.3s; font-size:0.83rem; color:var(--text-light); line-height:1.6; padding:0 1.2rem; }
+.faq-item.open .faq-a { max-height:300px; padding:0 1.2rem 1rem; }
+.chat-msg { max-width:82%; padding:0.6rem 0.9rem; border-radius:14px; font-size:0.82rem; line-height:1.5; }
+.chat-bot  { background:#f0f4ff; color:#1e3a8a; border-radius:14px 14px 14px 4px; align-self:flex-start; }
+.chat-user { background:#2563eb; color:#fff; border-radius:14px 14px 4px 14px; align-self:flex-end; }
+</style>
+</body>
+</html>

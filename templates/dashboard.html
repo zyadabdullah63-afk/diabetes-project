@@ -1,1 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — DiabetesAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary:#2563eb; --primary-dark:#1e40af;
+            --green:#059669;   --red:#dc2626;
+            --orange:#ea580c;  --purple:#7c3aed;
+            --bg:#f1f5f9;      --white:#fff;
+            --text:#334155;    --heading:#0a1c3a;
+            --border:#e2e8f0;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
+        /* ── Nav ── */
+        nav {
+            background:var(--white); border-bottom:1px solid var(--border);
+            padding:0.9rem 2rem; display:flex; align-items:center;
+            justify-content:space-between; position:sticky; top:0; z-index:100;
+            box-shadow:0 2px 10px rgba(0,0,0,0.05);
+        }
+        .nav-logo { display:flex; align-items:center; gap:0.6rem; font-weight:800; font-size:1.1rem; color:var(--heading); text-decoration:none; }
+        .nav-logo i { color:var(--primary); }
+        .nav-right { display:flex; align-items:center; gap:1rem; }
+        .nav-user { display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; font-weight:600; color:var(--heading); }
+        .avatar {
+            width:36px; height:36px; border-radius:50%;
+            background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+            display:flex; align-items:center; justify-content:center;
+            color:#fff; font-weight:700; font-size:0.9rem;
+        }
+        .btn-logout {
+            padding:0.45rem 1rem; background:#fef2f2; color:var(--red);
+            border:1px solid #fecaca; border-radius:10px;
+            font-size:0.8rem; font-weight:600; cursor:pointer;
+            text-decoration:none; display:flex; align-items:center; gap:0.4rem;
+            transition:all 0.2s;
+        }
+        .btn-logout:hover { background:var(--red); color:#fff; }
+        .btn-home {
+            padding:0.45rem 1rem; background:var(--primary); color:#fff;
+            border-radius:10px; font-size:0.8rem; font-weight:600;
+            text-decoration:none; display:flex; align-items:center; gap:0.4rem;
+            transition:all 0.2s;
+        }
+        .btn-home:hover { background:var(--primary-dark); }
+
+        /* ── Layout ── */
+        .container { max-width:1100px; margin:0 auto; padding:2rem 1.5rem; }
+        .page-title { font-size:1.5rem; font-weight:800; color:var(--heading); margin-bottom:0.3rem; }
+        .page-sub   { font-size:0.85rem; color:#64748b; margin-bottom:2rem; }
+
+        /* ── Stats Grid ── */
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:2rem; }
+        .stat-card {
+            background:var(--white); border-radius:18px; padding:1.2rem 1.4rem;
+            border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,0.04);
+        }
+        .stat-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:0.7rem; }
+        .stat-value { font-size:1.8rem; font-weight:800; color:var(--heading); }
+        .stat-label { font-size:0.75rem; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin-top:0.2rem; }
+
+        /* ── History Table ── */
+        .section-title { font-size:1rem; font-weight:700; color:var(--heading); margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+        .history-card { background:var(--white); border-radius:18px; border:1px solid var(--border); overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
+        .history-table { width:100%; border-collapse:collapse; }
+        .history-table th { background:#f8fafc; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#64748b; padding:0.8rem 1rem; text-align:left; border-bottom:1px solid var(--border); }
+        .history-table td { padding:0.85rem 1rem; font-size:0.83rem; border-bottom:1px solid #f1f5f9; vertical-align:middle; }
+        .history-table tr:last-child td { border-bottom:none; }
+        .history-table tr:hover td { background:#f8fafc; }
+        .badge {
+            padding:0.25rem 0.7rem; border-radius:50px; font-size:0.72rem; font-weight:700;
+            display:inline-flex; align-items:center; gap:0.3rem;
+        }
+        .badge-red    { background:#fef2f2; color:var(--red); }
+        .badge-green  { background:#ecfdf5; color:var(--green); }
+        .badge-orange { background:#fff7ed; color:var(--orange); }
+        .badge-yellow { background:#fffbeb; color:#92400e; }
+
+        .empty-state { text-align:center; padding:3rem 2rem; color:#94a3b8; }
+        .empty-state i { font-size:2.5rem; margin-bottom:0.8rem; display:block; }
+        .empty-state p { font-size:0.9rem; }
+        .empty-state a { color:var(--primary); font-weight:600; text-decoration:none; }
+
+        /* ── Profile card ── */
+        .profile-card {
+            background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+            border-radius:18px; padding:1.5rem; color:#fff;
+            margin-bottom:2rem; display:flex; align-items:center; gap:1.2rem;
+            box-shadow:0 8px 25px rgba(37,99,235,0.25);
+        }
+        .profile-avatar {
+            width:60px; height:60px; border-radius:50%;
+            background:rgba(255,255,255,0.2);
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.4rem; font-weight:800; color:#fff; flex-shrink:0;
+        }
+        .profile-info h2  { font-size:1.1rem; font-weight:700; }
+        .profile-info p   { font-size:0.8rem; opacity:0.8; margin-top:0.2rem; }
+        .profile-info small { font-size:0.72rem; opacity:0.65; }
+
+        @media(max-width:600px) {
+            .stats-grid { grid-template-columns:repeat(2,1fr); }
+            .history-table th:nth-child(3),.history-table td:nth-child(3),
+            .history-table th:nth-child(5),.history-table td:nth-child(5) { display:none; }
+            nav { padding:0.8rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+    <a class="nav-logo" href="/">
+        <i class="fas fa-heartbeat"></i> DiabetesAI
+    </a>
+    <div class="nav-right">
+        <div class="nav-user">
+            <div class="avatar">{{ user.username[0].upper() }}</div>
+            <span>{{ user.username }}</span>
+        </div>
+        <a class="btn-home" href="/"><i class="fas fa-flask"></i> Run Analysis</a>
+        <a href="{% if can_take_survey %}/survey{% else %}/dashboard?survey=done{% endif %}" style="display:flex;align-items:center;gap:0.4rem;
+            padding:0.45rem 1rem;
+            {% if not can_take_survey %}background:#ecfdf5;color:#059669;border:1px solid #bbf7d0;
+            {% else %}background:#fffbeb;color:#d97706;border:1px solid #fde68a;{% endif %}
+            border-radius:10px;font-size:0.8rem;font-weight:600;text-decoration:none;transition:all 0.2s;">
+            {% if not can_take_survey %}
+                <i class="fas fa-check-circle"></i> Survey Done
+            {% else %}
+                <i class="fas fa-clipboard-list"></i> Take Survey
+            {% endif %}
+        </a>
+        <a class="btn-logout" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    {% if first_survey_reminder %}
+    <div style="background:#fffbeb;border:1px solid #fde68a;color:#92400e;
+        border-radius:14px;padding:0.9rem 1rem;margin-bottom:1rem;font-size:0.85rem;font-weight:600;">
+        <i class="fas fa-bell"></i>
+        You completed your first analysis. Please fill in the survey now.
+        <a href="/survey" style="margin-left:0.5rem;color:#b45309;font-weight:800;text-decoration:none;">Open Survey</a>
+    </div>
+    {% endif %}
+
+    <!-- Profile Banner -->
+    <div class="profile-card">
+        <div class="profile-avatar">{{ user.username[0].upper() }}</div>
+        <div class="profile-info">
+            <h2>Welcome back, {{ user.username }}! 👋</h2>
+            <p>{{ user.email }}</p>
+            <small>
+                Member since {{ user.created_at[:10] }}
+                {% if user.last_login %}
+                  &nbsp;·&nbsp; Last login: {{ user.last_login[:16].replace('T',' ') }}
+                {% endif %}
+            </small>
+        </div>
+    </div>
+
+    <div class="page-title">Your Health Dashboard</div>
+    <div class="page-sub">Track your analysis history and health statistics</div>
+
+    <!-- Stats -->
+    {% set total = predictions|length %}
+    {% set diabetic_count = predictions|selectattr('result','equalto','DIABETIC')|list|length %}
+    {% set healthy_count  = total - diabetic_count %}
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#eff6ff;">
+                <i class="fas fa-flask" style="color:var(--primary);"></i>
+            </div>
+            <div class="stat-value">{{ total }}</div>
+            <div class="stat-label">Total Analyses</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#ecfdf5;">
+                <i class="fas fa-check-circle" style="color:var(--green);"></i>
+            </div>
+            <div class="stat-value" style="color:var(--green);">{{ healthy_count }}</div>
+            <div class="stat-label">Non-Diabetic Results</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#fef2f2;">
+                <i class="fas fa-exclamation-triangle" style="color:var(--red);"></i>
+            </div>
+            <div class="stat-value" style="color:var(--red);">{{ diabetic_count }}</div>
+            <div class="stat-label">Diabetic Results</div>
+        </div>
+
+        <div class="stat-card" style="{% if can_take_survey %}border:1.5px solid #fde68a;{% else %}border:1.5px solid #bbf7d0;{% endif %}">
+            <div class="stat-icon" style="background:{% if can_take_survey %}#fffbeb{% else %}#ecfdf5{% endif %};">
+                <i class="fas fa-clipboard-list" style="color:{% if can_take_survey %}#d97706{% else %}var(--green){% endif %};"></i>
+            </div>
+            {% if can_take_survey %}
+                <div class="stat-value" style="color:#d97706;font-size:1rem;margin-top:0.3rem;">Pending</div>
+                <div class="stat-label">Latest Analysis Survey</div>
+                <a href="/survey" style="display:inline-flex;align-items:center;gap:0.3rem;
+                    margin-top:0.5rem;font-size:0.72rem;font-weight:700;
+                    color:#d97706;text-decoration:none;">
+                    Fill Now →
+                </a>
+            {% else %}
+                <div class="stat-value" style="color:var(--green);font-size:1.3rem;">✓ Done</div>
+                <div class="stat-label">Latest Analysis Survey</div>
+            {% endif %}
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#f5f3ff;">
+                <i class="fas fa-sign-in-alt" style="color:var(--purple);"></i>
+            </div>
+            <div class="stat-value" style="color:var(--purple);">{{ total_logins }}</div>
+            <div class="stat-label">Total Logins</div>
+        </div>
+
+        {% if total > 0 %}
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#fffbeb;">
+                <i class="fas fa-tint" style="color:#d97706;"></i>
+            </div>
+            <div class="stat-value" style="color:#d97706;font-size:1.3rem;">
+                {{ "%.1f"|format(predictions[0].glucose) }}
+            </div>
+            <div class="stat-label">Last Glucose (mg/dL)</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#f0fdfa;">
+                <i class="fas fa-weight" style="color:#0d9488;"></i>
+            </div>
+            <div class="stat-value" style="color:#0d9488;font-size:1.3rem;">
+                {{ "%.1f"|format(predictions[0].bmi) }}
+            </div>
+            <div class="stat-label">Last BMI</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- History Table -->
+    <div class="section-title">
+        <i class="fas fa-history" style="color:var(--primary);"></i>
+        Analysis History
+    </div>
+
+    <div class="history-card">
+        {% if predictions %}
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Date & Time</th>
+                    <th>Glucose</th>
+                    <th>BMI</th>
+                    <th>Age</th>
+                    <th>Result</th>
+                    <th>Risk Level</th>
+                    <th>Probability</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in predictions %}
+                <tr>
+                    <td style="color:#94a3b8;font-size:0.75rem;">{{ loop.index }}</td>
+                    <td style="white-space:nowrap;color:#64748b;font-size:0.78rem;">
+                        {{ p.created_at[:16].replace('T', ' ') }}
+                    </td>
+                    <td><strong>{{ "%.0f"|format(p.glucose) }}</strong> <span style="color:#94a3b8;font-size:0.72rem;">mg/dL</span></td>
+                    <td><strong>{{ "%.1f"|format(p.bmi) }}</strong></td>
+                    <td>{{ p.age|int }} yrs</td>
+                    <td>
+                        {% if p.result == 'DIABETIC' %}
+                            <span class="badge badge-red"><i class="fas fa-exclamation-triangle"></i> Diabetic</span>
+                        {% else %}
+                            <span class="badge badge-green"><i class="fas fa-check-circle"></i> Non-Diabetic</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if 'High' in p.risk_level %}
+                            <span class="badge badge-red">{{ p.risk_level }}</span>
+                        {% elif 'Moderate' in p.risk_level %}
+                            <span class="badge badge-orange">{{ p.risk_level }}</span>
+                        {% elif 'Low Risk' == p.risk_level %}
+                            <span class="badge badge-yellow">{{ p.risk_level }}</span>
+                        {% else %}
+                            <span class="badge badge-green">{{ p.risk_level }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong style="color:{% if p.probability >= 70 %}var(--red){% elif p.probability >= 40 %}var(--orange){% else %}var(--green){% endif %};">
+                            {{ "%.1f"|format(p.probability) }}%
+                        </strong>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-flask"></i>
+            <p>No analyses yet.<br>
+                <a href="/">Run your first health analysis →</a>
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+</body>
+</html>

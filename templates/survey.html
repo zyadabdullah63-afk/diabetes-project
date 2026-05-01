@@ -1,1 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Satisfaction Survey — DiabetesAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary:#2563eb; --primary-dark:#1e40af;
+            --green:#059669; --red:#dc2626; --orange:#ea580c;
+            --text:#334155; --heading:#0a1c3a; --border:#e2e8f0;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family:'Inter',sans-serif;
+            background:linear-gradient(135deg,#f8faff 0%,#eef2ff 50%,#f0fdf4 100%);
+            min-height:100vh; padding:2rem 1rem;
+        }
 
+        /* ── Header ── */
+        .survey-header {
+            max-width:760px; margin:0 auto 2rem;
+            background:linear-gradient(135deg,#1e40af,#2563eb);
+            border-radius:24px; padding:2rem;
+            box-shadow:0 12px 40px rgba(37,99,235,0.25);
+            text-align:center; color:#fff;
+        }
+        .survey-header .icon {
+            width:64px; height:64px;
+            background:rgba(255,255,255,0.15);
+            border-radius:18px; margin:0 auto 1rem;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.8rem;
+        }
+        .survey-header h1  { font-size:1.5rem; font-weight:800; }
+        .survey-header p   { font-size:0.85rem; opacity:0.85; margin-top:0.5rem; line-height:1.5; }
+        .required-banner {
+            background:rgba(220,38,38,0.15); border:1px solid rgba(220,38,38,0.3);
+            border-radius:12px; padding:0.6rem 1rem; margin-top:1rem;
+            font-size:0.8rem; font-weight:600; color:#fca5a5;
+            display:none; align-items:center; gap:0.5rem; justify-content:center;
+        }
+
+        /* ── Scale legend ── */
+        .scale-legend {
+            max-width:760px; margin:0 auto 1.5rem;
+            background:#fff; border-radius:16px; padding:1rem 1.5rem;
+            border:1px solid var(--border);
+            box-shadow:0 2px 8px rgba(0,0,0,0.04);
+        }
+        .scale-legend p { font-size:0.78rem; color:#64748b; margin-bottom:0.6rem; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+        .scale-items { display:flex; gap:0.5rem; flex-wrap:wrap; }
+        .scale-item  { display:flex; align-items:center; gap:0.4rem; font-size:0.78rem; }
+        .scale-dot   { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:0.7rem; flex-shrink:0; }
+
+        /* ── Question Card ── */
+        .question-card {
+            max-width:760px; margin:0 auto 1rem;
+            background:#fff; border-radius:20px;
+            border:2px solid var(--border);
+            padding:1.4rem 1.6rem;
+            box-shadow:0 2px 8px rgba(0,0,0,0.04);
+            transition:border-color 0.2s, box-shadow 0.2s;
+        }
+        .question-card.answered   { border-color:#bbf7d0; box-shadow:0 4px 15px rgba(5,150,105,0.1); }
+        .question-card.unanswered { border-color:#fecaca; box-shadow:0 4px 15px rgba(220,38,38,0.1); animation:shake 0.3s ease; }
+
+        @keyframes shake {
+            0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+        }
+
+        .q-header { display:flex; align-items:flex-start; gap:0.8rem; margin-bottom:1rem; }
+        .q-number {
+            width:32px; height:32px; border-radius:10px; flex-shrink:0;
+            background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+            display:flex; align-items:center; justify-content:center;
+            color:#fff; font-weight:700; font-size:0.85rem;
+        }
+        .q-text { font-size:0.92rem; font-weight:600; color:var(--heading); line-height:1.4; padding-top:0.3rem; }
+
+        /* ── Likert Scale ── */
+        .likert { display:flex; gap:0.5rem; flex-wrap:wrap; }
+        .likert label {
+            flex:1; min-width:90px;
+            display:flex; flex-direction:column; align-items:center; gap:0.3rem;
+            cursor:pointer;
+        }
+        .likert input[type="radio"] { display:none; }
+        .likert-btn {
+            width:100%; padding:0.55rem 0.3rem;
+            border-radius:12px; border:2px solid var(--border);
+            text-align:center; font-size:0.72rem; font-weight:600;
+            color:#64748b; background:#f8fafc;
+            transition:all 0.2s; line-height:1.3;
+            cursor:pointer;
+        }
+        .likert-btn:hover { border-color:#93c5fd; background:#eff6ff; color:var(--primary); }
+        .likert input:checked + .likert-btn { color:#fff; border-color:transparent; }
+
+        /* Colors per option */
+        .likert label:nth-child(1) input:checked + .likert-btn { background:#059669; }
+        .likert label:nth-child(2) input:checked + .likert-btn { background:#34d399; color:#064e3b; }
+        .likert label:nth-child(3) input:checked + .likert-btn { background:#f59e0b; }
+        .likert label:nth-child(4) input:checked + .likert-btn { background:#f97316; }
+        .likert label:nth-child(5) input:checked + .likert-btn { background:#dc2626; }
+
+        /* ── Progress ── */
+        .progress-wrap {
+            max-width:760px; margin:0 auto 1.5rem;
+            display:flex; align-items:center; gap:0.8rem;
+        }
+        .progress-bar { flex:1; height:8px; background:#e2e8f0; border-radius:50px; overflow:hidden; }
+        .progress-fill { height:100%; background:linear-gradient(90deg,#059669,#34d399); border-radius:50px; transition:width 0.4s ease; width:0%; }
+        .progress-text { font-size:0.78rem; font-weight:700; color:var(--primary); white-space:nowrap; }
+
+        /* ── Submit ── */
+        .submit-wrap { max-width:760px; margin:1.5rem auto 0; }
+        .btn-submit {
+            width:100%; padding:1rem;
+            background:linear-gradient(135deg,#059669,#047857);
+            color:#fff; border:none; border-radius:16px;
+            font-family:'Inter',sans-serif; font-size:1rem; font-weight:700;
+            cursor:pointer; transition:all 0.3s;
+            display:flex; align-items:center; justify-content:center; gap:0.6rem;
+            box-shadow:0 8px 25px rgba(5,150,105,0.3);
+        }
+        .btn-submit:hover  { transform:translateY(-2px); box-shadow:0 12px 35px rgba(5,150,105,0.4); }
+        .btn-submit:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
+
+        .error-box {
+            background:#fef2f2; border:1px solid #fecaca; border-radius:12px;
+            padding:0.8rem 1rem; font-size:0.82rem; color:#dc2626;
+            margin-bottom:1rem; display:none; align-items:center; gap:0.5rem;
+        }
+        .success-box {
+            background:#ecfdf5; border:1px solid #bbf7d0; border-radius:12px;
+            padding:0.8rem 1rem; font-size:0.82rem; color:#059669;
+            margin-bottom:1rem; display:none; align-items:center; gap:0.5rem;
+        }
+
+        .back-link {
+            text-align:center; margin-top:1.5rem;
+            font-size:0.8rem; color:#94a3b8;
+        }
+        .back-link a { color:var(--primary); text-decoration:none; font-weight:600; }
+
+        @media(max-width:600px) {
+            .likert-btn { font-size:0.65rem; padding:0.5rem 0.2rem; }
+            .question-card { padding:1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="survey-header">
+    <div class="icon">📋</div>
+    <h1>User Satisfaction Survey</h1>
+    <p>
+        Thank you for using DiabetesAI! Please take 2 minutes to rate your experience.<br>
+        Your feedback helps us improve the platform for everyone.
+    </p>
+    <div class="required-banner" id="requiredBanner">
+        <i class="fas fa-lock"></i>
+        Please complete this survey before logging out. Your feedback matters!
+    </div>
+</div>
+
+<!-- Scale Legend -->
+<div class="scale-legend">
+    <p>Rating Scale:</p>
+    <div class="scale-items">
+        <div class="scale-item"><div class="scale-dot" style="background:#059669">5</div> Strongly Agree</div>
+        <div class="scale-item"><div class="scale-dot" style="background:#34d399;color:#064e3b">4</div> Agree</div>
+        <div class="scale-item"><div class="scale-dot" style="background:#f59e0b">3</div> Neutral</div>
+        <div class="scale-item"><div class="scale-dot" style="background:#f97316">2</div> Disagree</div>
+        <div class="scale-item"><div class="scale-dot" style="background:#dc2626">1</div> Strongly Disagree</div>
+    </div>
+</div>
+
+<!-- Progress -->
+<div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">0 / 10</div>
+</div>
+
+<!-- Questions -->
+<div id="questionsContainer"></div>
+
+<!-- Error / Success -->
+<div class="submit-wrap">
+    <div class="error-box"   id="errorBox"><i class="fas fa-exclamation-circle"></i><span id="errorMsg"></span></div>
+    <div class="success-box" id="successBox"><i class="fas fa-check-circle"></i><span id="successMsg"></span></div>
+    <button class="btn-submit" id="submitBtn" onclick="submitSurvey()">
+        <i class="fas fa-paper-plane"></i> Submit Survey
+    </button>
+    <div class="back-link" style="margin-top:1rem;">
+        <a href="/dashboard"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+</div>
+
+<script>
+// ── 10 Questions (SUS + Medical UX + AI Trust standards) ──────────────────
+const QUESTIONS = [
+    {
+    id: 'q1',
+    text: 'The platform was easy to navigate and use overall.'
+},
+{
+    id: 'q2',
+    text: 'The AI-based analysis results were clear and easy to understand.'
+},
+{
+    id: 'q3',
+    text: 'The recommended nutrition and exercise plans were useful and relevant to my health data.'
+},
+{
+    id: 'q4',
+    text: 'The medical information presented on the platform seemed accurate and trustworthy.'
+},
+{
+    id: 'q5',
+    text: 'Entering my health data and running the analysis was simple and straightforward.'
+},
+{
+    id: 'q6',
+    text: 'The interface design and user experience were well organized and comfortable to use.'
+},
+{
+    id: 'q7',
+    text: 'The pages loaded quickly and the platform responded smoothly.'
+},
+{
+    id: 'q8',
+    text: 'The platform worked reliably without noticeable technical errors.'
+},
+{
+    id: 'q9',
+    text: 'I felt that my personal data was handled securely and privately.'
+},
+{
+    id: 'q10',
+    text: 'Overall, I am satisfied with my experience and would recommend DiabetesAI to others.'
+},
+];
+
+const OPTIONS = [
+    { value: 5, label: 'Strongly<br>Agree' },
+    { value: 4, label: 'Agree' },
+    { value: 3, label: 'Neutral' },
+    { value: 2, label: 'Disagree' },
+    { value: 1, label: 'Strongly<br>Disagree' },
+];
+
+// ── Render Questions ──────────────────────────────────────────────────────
+function renderQuestions() {
+    const container = document.getElementById('questionsContainer');
+    container.innerHTML = QUESTIONS.map((q, idx) => `
+        <div class="question-card" id="card-${q.id}">
+            <div class="q-header">
+                <div class="q-number">${idx + 1}</div>
+                <div class="q-text">${q.text}</div>
+            </div>
+            <div class="likert">
+                ${OPTIONS.map(opt => `
+                    <label>
+                        <input type="radio" name="${q.id}" value="${opt.value}"
+                               onchange="onAnswer('${q.id}')">
+                        <div class="likert-btn">${opt.label}</div>
+                    </label>`).join('')}
+            </div>
+        </div>`).join('');
+}
+
+function onAnswer(qid) {
+    const card = document.getElementById('card-' + qid);
+    card.classList.remove('unanswered');
+    card.classList.add('answered');
+    updateProgress();
+}
+
+function updateProgress() {
+    const answered = QUESTIONS.filter(q =>
+        document.querySelector(`input[name="${q.id}"]:checked`)
+    ).length;
+    const pct = (answered / QUESTIONS.length) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `${answered} / ${QUESTIONS.length}`;
+}
+
+// ── Submit ────────────────────────────────────────────────────────────────
+async function submitSurvey() {
+    hideMessages();
+    const payload = {};
+    const unanswered = [];
+
+    QUESTIONS.forEach(q => {
+        const checked = document.querySelector(`input[name="${q.id}"]:checked`);
+        if (checked) {
+            payload[q.id] = parseInt(checked.value);
+            document.getElementById('card-' + q.id).classList.remove('unanswered');
+        } else {
+            unanswered.push(q.id);
+            const card = document.getElementById('card-' + q.id);
+            card.classList.add('unanswered');
+            card.classList.remove('answered');
+        }
+    });
+
+    if (unanswered.length > 0) {
+        showError(`Please answer all questions. ${unanswered.length} question(s) remaining.`);
+        // Scroll to first unanswered
+        document.getElementById('card-' + unanswered[0]).scrollIntoView({ behavior:'smooth', block:'center' });
+        return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+    try {
+        const res  = await fetch('/survey/submit', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data.status === 'success') {
+            showSuccess('🎉 Thank you! Your feedback has been recorded. Redirecting...');
+            setTimeout(() => window.location.href = data.redirect, 1500);
+        } else {
+            showError(data.message || 'Submission failed. Please try again.');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Survey';
+        }
+    } catch(e) {
+        showError('Cannot connect to server.');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Survey';
+    }
+}
+
+function showError(msg)   { document.getElementById('errorMsg').textContent=msg;   document.getElementById('errorBox').style.display='flex'; }
+function showSuccess(msg) { document.getElementById('successMsg').textContent=msg; document.getElementById('successBox').style.display='flex'; }
+function hideMessages()   { document.getElementById('errorBox').style.display='none'; document.getElementById('successBox').style.display='none'; }
+
+// ── Init ──────────────────────────────────────────────────────────────────
+renderQuestions();
+
+// Show required banner if redirected from logout attempt
+const params = new URLSearchParams(window.location.search);
+if (params.get('required') === '1') {
+    document.getElementById('requiredBanner').style.display = 'flex';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
