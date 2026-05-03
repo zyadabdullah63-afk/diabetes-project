@@ -712,16 +712,21 @@ def survey_results():
 
 
 # ─── Ollama Chatbot Route ─────────────────────────────────────────────────────
-# ─── Ollama Chatbot Route ─────────────────────────────────────────────────────
 @app.route('/chat', methods=['POST'])
 def chat():
     """
     DiabetesAI chatbot endpoint using local Ollama.
 
-    Important:
-    - Ollama must be installed and running.
-    - The model must be pulled once:
-      ollama pull qwen2.5:3b
+    Behavior:
+    - Answers in Arabic when the user writes Arabic.
+    - Answers in English when the user writes English.
+    - Tolerates simple spelling mistakes and slang.
+    - Refuses only when the question is clearly outside the DiabetesAI project scope
+      or when the message is mostly unreadable/garbled.
+
+    Requirements:
+    - Ollama must be running on the same machine as Flask.
+    - Model must be installed once with: ollama pull qwen2.5:3b
     """
     try:
         print("\n========== OLLAMA CHAT ROUTE CALLED ==========")
@@ -733,59 +738,229 @@ def chat():
         if not message:
             return jsonify({'status': 'error', 'message': 'Empty message'}), 400
 
-        # ✅ Local scope check before calling Ollama.
-        # This prevents the model from wrongly refusing valid diabetes questions.
-        msg_lower = message.lower()
-
-        allowed_keywords = [
-            # Arabic diabetes / health
-            'سكر', 'السكر', 'السكري', 'مرض السكري', 'داء السكري',
-            'جلوكوز', 'الجلucose', 'الانسولين', 'أنسولين', 'انسولين',
-            'ضغط', 'ضغط الدم', 'bmi', 'كتلة الجسم', 'وزن', 'سمنة',
-            'اعراض', 'أعراض', 'علاج', 'وقاية', 'تشخيص', 'مضاعفات',
-            'اكل', 'أكل', 'غذاء', 'تغذية', 'نظام غذائي', 'دايت',
-            'سعرات', 'كارب', 'كربوهيدرات', 'بروتين', 'رياضة', 'تمارين',
-            'تحليل', 'تحاليل', 'الهيموجلوبين', 'hba1c',
-            # Project / platform
-            'diabetesai', 'المنصة', 'المشروع', 'الموديل', 'النموذج',
-            'prediction', 'predict', 'analysis', 'dashboard', 'survey',
-            'استبيان', 'تسجيل', 'دخول', 'قاعدة البيانات', 'flask',
-            'python', 'sqlite', 'ollama', 'qwen',
-            # English
-            'diabetes', 'diabetic', 'glucose', 'blood sugar', 'insulin',
-            'hba1c', 'symptoms', 'treatment', 'diagnosis', 'prevention',
-            'complications', 'nutrition', 'diet', 'calories', 'carbs',
-            'protein', 'exercise', 'blood pressure', 'model', 'dataset',
-            'platform', 'chatbot'
-        ]
-
-        is_allowed = any(keyword in msg_lower for keyword in allowed_keywords)
-
-        if not is_allowed:
-            return jsonify({
-                'status': 'success',
-                'reply': 'السؤال ده خارج نطاق مشروع DiabetesAI. أقدر أساعدك في السكري أو المنصة أو أدوات المشروع فقط.'
-            }), 200
-
         import urllib.request
         import urllib.error
         import json as _json
+        import re
+        import difflib
 
         ollama_model = "qwen2.5:3b"
         ollama_url = "http://127.0.0.1:11434/api/generate"
 
+        def has_arabic(text):
+            return bool(re.search(r'[\u0600-\u06FF]', text))
+
+        def normalize_text(text):
+            text = text.lower().strip()
+            # Arabic normalization
+            text = text.replace('أ', 'ا').replace('إ', 'ا').replace('آ', 'ا')
+            text = text.replace('ى', 'ي').replace('ة', 'ه').replace('ؤ', 'و').replace('ئ', 'ي')
+            text = text.replace('ـ', '')
+            # normalize repeated letters: سككككر -> سككر (small tolerance)
+            text = re.sub(r'(.)\1{2,}', r'\1\1', text)
+            text = re.sub(r'[^a-z0-9\s\u0600-\u06FF]', ' ', text)
+            text = re.sub(r'\s+', ' ', text).strip()
+            return text
+
+        def token_similarity(word, keyword):
+            return difflib.SequenceMatcher(None, word, keyword).ratio()
+
+        def looks_like_any_keyword(word, keywords, cutoff=0.72):
+            if len(word) < 4:
+                return False
+            for keyword in keywords:
+                for part in normalize_text(keyword).split():
+                    if len(part) >= 4 and token_similarity(word, part) >= cutoff:
+                        return True
+            return False
+
+        is_arabic_question = has_arabic(message)
+        clean_msg = normalize_text(message)
+        words = clean_msg.split()
+
+        arabic_keywords = [
+            # Diabetes names / common Arabic spellings / dialect
+            'سكر', 'السكر', 'سكري', 'السكري', 'مرض السكر', 'مرض السكري', 'داء السكري',
+            'ديابيتس', 'دايبتس', 'دايبتيز', 'ديابتس', 'ديابيتز', 'مريض سكر', 'مريض', 'مرض',
+            'مزمن', 'غده', 'بنكرياس', 'البنكرياس',
+
+            # Symptoms / diagnosis / medical terms
+            'اعراض', 'اعراضه', 'علامات', 'تشخيص', 'يتشخص', 'فحص', 'قياس', 'تحليل', 'تحاليل',
+            'نتيجه', 'نتيجة', 'تراكمي', 'هيموجلوبين', 'جلوكوز', 'غلوكوز', 'جلوكوذ',
+            'انسولين', 'الانسولين', 'انسلين', 'ضغط', 'الضغط', 'ضغط الدم', 'دم', 'الدم',
+            'مقاومه', 'مقاومة', 'مقاومه الانسولين', 'مضاعفات', 'هبوط', 'ارتفاع', 'عالي', 'واطي',
+            'عطش', 'تبول', 'دوخه', 'تعب', 'ارهاق', 'زغلله', 'تنميل', 'جرح', 'التئام',
+
+            # Treatment / advice / doctor
+            'علاج', 'يتعالج', 'دواء', 'ادويه', 'ادوية', 'حقن', 'جرعه', 'جرعة', 'طبيب', 'دكتور',
+            'نصيحه', 'نصيحة', 'اعمل اي', 'اعمل ايه', 'اتعامل ازاي', 'اتصرف ازاي', 'اروح لمين',
+            'وقايه', 'وقاية', 'احمي', 'اخطر', 'خطر', 'هل خطير',
+
+            # Nutrition / lifestyle
+            'اكل', 'اكله', 'اكلات', 'طعام', 'غذا', 'غذاء', 'تغذيه', 'تغذية', 'نظام', 'نظام غذائي',
+            'دايت', 'حمية', 'حميه', 'وجبه', 'وجبة', 'فطار', 'غدا', 'غداء', 'عشا', 'عشاء',
+            'سعرات', 'كالوري', 'كارب', 'كربوهيدرات', 'نشويات', 'بروتين', 'دهون', 'مسموح', 'ممنوع',
+            'ينفع اكل', 'ماينفعش', 'مياه', 'شرب', 'رياضه', 'رياضة', 'تمارين', 'تمرين', 'مشي',
+            'جري', 'جيم', 'نوم', 'توتر', 'قلق', 'ضغط نفسي',
+
+            # Body metrics
+            'وزن', 'الوزن', 'تخسيس', 'تخس', 'سمنه', 'سمنة', 'نحافه', 'نحافة', 'طول', 'كتله',
+            'كتلة', 'مؤشر', 'عمر', 'سن',
+
+            # Project / platform / UI
+            'المشروع', 'مشروع', 'المنصه', 'المنصة', 'الموقع', 'السيستم', 'النظام', 'التطبيق',
+            'ابلكيشن', 'ويب', 'ديابيتس ai', 'داشبورد', 'الداشبورد', 'تسجيل', 'دخول', 'لوجن',
+            'حساب', 'اكونت', 'استبيان', 'اسئلة', 'اسئله', 'تقييم', 'راي', 'رأي', 'اناليسيس',
+            'تحليل الموقع', 'نتايج', 'نتائج', 'اقتراح', 'اقتراحات', 'خطة', 'خطه',
+
+            # AI / model / data / backend
+            'ذكاء', 'ذكاء اصطناعي', 'موديل', 'الموديل', 'نموذج', 'النموذج', 'توقع', 'تنبؤ',
+            'نسبة', 'نسبه', 'احتمال', 'دقه', 'دقة', 'الدقه', 'الدقة', 'داتا', 'الداتا', 'بيانات',
+            'قاعدة بيانات', 'قاعده بيانات', 'جدول', 'باك', 'باك اند', 'فرونت', 'فرونت اند',
+            'فلاسك', 'بايثون', 'اولاما', 'كوين', 'جيميناي', 'استضافه', 'استضافة', 'هوست', 'رفع', 'جيت هب'
+        ]
+
+        english_keywords = [
+            # Diabetes / common typos
+            'diabetes', 'diabetic', 'diabete', 'diabtes', 'diabetees', 'diabets', 'diabitis',
+            'sugar', 'blood sugar', 'glucose', 'insulin', 'hba1c', 'a1c', 'type 1', 'type 2',
+            'gestational', 'prediabetes', 'pancreas',
+
+            # Medical
+            'symptom', 'symptoms', 'sign', 'signs', 'cause', 'causes', 'diagnosis', 'diagnose',
+            'test', 'tests', 'treatment', 'medicine', 'medication', 'doctor', 'complication',
+            'complications', 'prevention', 'prevent', 'risk', 'blood', 'pressure', 'bmi',
+            'obesity', 'weight', 'age', 'thirst', 'urination', 'fatigue', 'blurred', 'wound',
+
+            # Lifestyle
+            'diet', 'nutrition', 'food', 'meal', 'meal plan', 'calorie', 'calories', 'carb', 'carbs',
+            'protein', 'fat', 'fats', 'exercise', 'workout', 'walking', 'running', 'sleep', 'stress',
+            'monitoring', 'healthy', 'unhealthy',
+
+            # Project/platform
+            'project', 'platform', 'website', 'web app', 'application', 'app', 'system', 'diabetesai',
+            'diabetes ai', 'dashboard', 'login', 'register', 'account', 'survey', 'analysis', 'result',
+            'results', 'recommendation', 'recommendations', 'prediction', 'predict', 'model', 'ai',
+            'accuracy', 'dataset', 'data', 'database', 'sqlite', 'csv', 'pkl',
+
+            # Tools/code
+            'flask', 'python', 'html', 'css', 'javascript', 'js', 'bootstrap', 'api', 'route', 'post',
+            'get', 'backend', 'frontend', 'ollama', 'qwen', 'gemini', 'hosting', 'deployment', 'deploy',
+            'pythonanywhere', 'render', 'github'
+        ]
+
+        unrelated_keywords_ar = [
+            'دولار', 'يورو', 'سعر الدولار', 'العملة', 'عمله', 'ماتش', 'كورة', 'كره', 'اغنيه', 'اغنية',
+            'فيلم', 'مسلسل', 'سياسه', 'سياسة', 'اخبار', 'طقس', 'الجو', 'نكتة', 'نكته', 'قصة', 'قصه'
+        ]
+        unrelated_keywords_en = [
+            'dollar', 'euro', 'currency', 'exchange rate', 'football', 'match', 'movie', 'song',
+            'politics', 'news', 'weather', 'joke', 'story'
+        ]
+
+        vague_allowed_ar = [
+            'ما هو المرض', 'ما المرض', 'ايه المرض', 'اي المرض', 'ما هو مرض', 'ايه الاعراض',
+            'ما الاعراض', 'ما هي الاعراض', 'ايه العلاج', 'ما العلاج', 'اعمل اي', 'اعمل ايه',
+            'اتعامل ازاي', 'اكل اي', 'ايه النظام', 'ايه الخطة', 'اشرح النتيجه', 'نتيجتي',
+            'التحليل معناه اي', 'ده معناه اي', 'ده ايه', 'دي ايه'
+        ]
+        vague_allowed_en = [
+            'what is the disease', 'what is this disease', 'what are symptoms', 'what is treatment',
+            'what should i eat', 'what should i do', 'explain my result', 'my result', 'my analysis',
+            'what does this mean', 'what is it'
+        ]
+
+        def contains_any(text, keywords):
+            nt = normalize_text(text)
+            return any(normalize_text(k) in nt for k in keywords)
+
+        def is_mostly_garbled(text):
+            """Reject only if the text is mostly unreadable/random, not just minor typos."""
+            t = normalize_text(text)
+            tokens = [w for w in t.split() if len(w) >= 3]
+            if not tokens:
+                return False
+
+            # If it contains Arabic, don't be too strict; Arabic dialect spelling varies a lot.
+            if has_arabic(text):
+                # reject only very strange long text with no Arabic/project/medical hints
+                if len(tokens) >= 4 and not contains_any(t, arabic_keywords + english_keywords + vague_allowed_ar):
+                    # If most tokens are extremely short/odd after normalization, consider it unclear.
+                    return False
+                return False
+
+            # English/franco: if most words are far from all known project words, reject.
+            known_or_close = 0
+            for w in tokens:
+                if any(w in normalize_text(k).split() for k in english_keywords):
+                    known_or_close += 1
+                elif looks_like_any_keyword(w, english_keywords, cutoff=0.68):
+                    known_or_close += 1
+
+            # Only reject when message is several words and almost no token is recognizable.
+            return len(tokens) >= 4 and known_or_close == 0
+
+        def is_allowed_question(text):
+            t = normalize_text(text)
+
+            # Clear unrelated topics should be refused unless there is also a clear project/medical keyword.
+            has_project_signal = contains_any(t, arabic_keywords + english_keywords + vague_allowed_ar + vague_allowed_en)
+            has_unrelated_signal = contains_any(t, unrelated_keywords_ar + unrelated_keywords_en)
+            if has_unrelated_signal and not has_project_signal:
+                return False
+
+            # Direct match: any small hint about diabetes/project/tools is enough.
+            if has_project_signal:
+                return True
+
+            # Typo tolerance: diabtes, glocose, inslin, predction, etc.
+            for w in t.split():
+                if looks_like_any_keyword(w, english_keywords, cutoff=0.68):
+                    return True
+                if looks_like_any_keyword(w, arabic_keywords, cutoff=0.70):
+                    return True
+
+            # If it is mostly unreadable and has no signal, reject.
+            if is_mostly_garbled(text):
+                return False
+
+            return False
+
+        if not is_allowed_question(message):
+            if is_arabic_question:
+                return jsonify({
+                    'status': 'success',
+                    'reply': 'مش قادر أفهم السؤال أو السؤال خارج نطاق مشروع DiabetesAI. اسألني عن السكري، التحليل، الأكل، الرياضة، الموديل، الاستبيان أو أدوات المشروع.'
+                }), 200
+            else:
+                return jsonify({
+                    'status': 'success',
+                    'reply': 'I cannot understand the question clearly, or it is outside DiabetesAI scope. Ask me about diabetes, analysis, diet, exercise, the model, survey, or project tools.'
+                }), 200
+
+        language_instruction = (
+            'The user wrote in Arabic. Reply in Arabic only. Use simple Egyptian Arabic when appropriate.'
+            if is_arabic_question else
+            'The user wrote in English. Reply in English only.'
+        )
+
         prompt = f"""
 You are DiabetesAI Assistant inside a college diabetes prediction web project.
 
-The user's question is already confirmed to be related to diabetes, health, nutrition, or the DiabetesAI platform.
-Do NOT say it is outside the project scope.
+The question passed a local DiabetesAI scope filter. It may contain spelling mistakes, slang, mixed wording, or informal language.
 
-Answer the user directly.
+Your scope:
+1) Diabetes disease: definition, symptoms, causes, diagnosis, treatment, complications, blood glucose, HbA1c, insulin, BMI, blood pressure.
+2) Lifestyle: nutrition, calories, carbs, protein, diet plans, exercise, sleep, stress, monitoring.
+3) DiabetesAI platform: prediction result, risk level, dashboard, login/register, survey, analysis form, dataset, database, model accuracy, diet recommendations, chatbot.
+4) Project tools: Flask, Python, HTML, CSS, JavaScript, SQLite, ML model, Ollama, deployment/hosting.
 
 Rules:
-- Reply in the same language as the user.
-- If the user writes Arabic, reply in clear Arabic/Egyptian Arabic.
-- If the user writes English, reply in English.
+- Tolerate simple spelling mistakes. Do not refuse just because of small typos.
+- If the question is vague but could refer to DiabetesAI, assume the context is diabetes or this platform.
+- If the message is truly unclear, ask the user politely to clarify.
+- {language_instruction}
+- Do not mix Arabic and English unless the user mixes them.
 - Keep the answer short, clear, and practical.
 - For serious medical advice, remind the user to consult a doctor.
 
@@ -794,41 +969,50 @@ User question:
 """
 
         body = _json.dumps({
-            "model": ollama_model,
-            "prompt": prompt,
-            "stream": False,
-            "options": {
-                "temperature": 0.1,
-                "num_predict": 300
+            'model': ollama_model,
+            'prompt': prompt,
+            'stream': False,
+            'options': {
+                'temperature': 0.15,
+                'num_predict': 300
             }
-        }).encode("utf-8")
+        }).encode('utf-8')
 
         req = urllib.request.Request(
             ollama_url,
             data=body,
-            headers={"Content-Type": "application/json"},
-            method="POST"
+            headers={'Content-Type': 'application/json'},
+            method='POST'
         )
 
         with urllib.request.urlopen(req, timeout=90) as resp:
-            raw = resp.read().decode("utf-8", errors="ignore")
-            print("OLLAMA RAW RESPONSE START:", raw[:300])
+            raw = resp.read().decode('utf-8', errors='ignore')
+            print('OLLAMA RAW RESPONSE START:', raw[:300])
             result = _json.loads(raw)
 
-        reply = result.get("response", "").strip()
+        reply = result.get('response', '').strip()
 
         if not reply:
-            print("OLLAMA EMPTY RESPONSE:", result)
+            print('OLLAMA EMPTY RESPONSE:', result)
             return jsonify({
                 'status': 'error',
-                'message': 'Ollama رد فاضي. جرّب السؤال مرة أخرى.'
+                'message': 'Ollama رد فاضي. جرّب السؤال مرة أخرى.' if is_arabic_question else 'Ollama returned an empty response. Please try again.'
             }), 200
 
-        print("OLLAMA CHAT SUCCESS")
+        print('OLLAMA CHAT SUCCESS')
         return jsonify({'status': 'success', 'reply': reply})
 
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode('utf-8', errors='ignore')
+        print('OLLAMA HTTP ERROR CODE:', e.code)
+        print('OLLAMA HTTP ERROR BODY:', err_body)
+        return jsonify({
+            'status': 'error',
+            'message': 'Ollama رجّع خطأ. راجع التيرمنال عند OLLAMA HTTP ERROR BODY.'
+        }), 200
+
     except urllib.error.URLError as e:
-        print("OLLAMA CONNECTION ERROR:", str(e))
+        print('OLLAMA CONNECTION ERROR:', str(e))
         return jsonify({
             'status': 'error',
             'message': 'Ollama غير شغال. افتح Ollama أو اكتب ollama serve، وتأكد إن موديل qwen2.5:3b متسطب.'
