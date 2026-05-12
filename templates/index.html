@@ -99,9 +99,6 @@
             0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
             50% { transform: translate(3%, 3%) scale(1.05); opacity: 1; }
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
         
         nav {
             position: fixed;
@@ -687,84 +684,6 @@
             border-radius: 4px;
         }
 
-        /* ── Survey Insights Section ── */
-        #survey-insights { padding: 5rem 2rem; }
-        .survey-stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.2rem;
-            max-width: 1100px;
-            margin: 0 auto 2rem;
-        }
-        .survey-kpi-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 1.5rem 1rem;
-            text-align: center;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-        }
-        .survey-kpi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
-        .survey-kpi-icon {
-            width: 48px; height: 48px; border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 0.8rem;
-            color: #fff; font-size: 1.2rem;
-        }
-        .survey-kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--heading); }
-        .survey-kpi-label { font-size: 0.75rem; color: var(--text-light); margin-top: 0.2rem; font-weight: 500; }
-        .survey-charts-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            max-width: 1100px;
-            margin: 0 auto 1.5rem;
-        }
-        .survey-chart-card {
-            background: var(--white);
-            border-radius: 24px;
-            padding: 1.8rem;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-        }
-        .survey-bar-card { max-width: 1100px; margin: 0 auto; }
-        .survey-chart-title {
-            font-size: 0.92rem; font-weight: 700; color: var(--heading);
-            margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.5rem;
-        }
-        .survey-chart-note { font-size: 0.73rem; color: var(--text-light); text-align: center; margin-top: 0.8rem; }
-        .si-donut-legend {
-            display: flex; flex-wrap: wrap; gap: 0.5rem 1rem;
-            justify-content: center; margin-top: 1rem;
-        }
-        .si-legend-item {
-            display: flex; align-items: center; gap: 0.35rem;
-            font-size: 0.73rem; color: var(--text-light);
-        }
-        .si-legend-item span {
-            width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex-shrink: 0;
-        }
-        .si-bar-row { display: flex; align-items: center; gap: 0.8rem; }
-        .si-bar-label { font-size: 0.72rem; color: var(--text-light); min-width: 24px; text-align: right; font-weight: 600; }
-        .si-bar-track { flex: 1; height: 22px; border-radius: 8px; overflow: hidden; display: flex; background: #f1f5f9; }
-        .si-bar-seg { height: 100%; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); position: relative; }
-        .si-bar-seg:hover::after {
-            content: attr(data-tip);
-            position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
-            background: #1e293b; color: #fff; font-size: 0.65rem; padding: 2px 6px;
-            border-radius: 6px; white-space: nowrap; pointer-events: none; z-index: 10;
-        }
-        .si-bar-avg { font-size: 0.72rem; font-weight: 700; color: var(--primary); min-width: 28px; }
-        @media(max-width: 900px) {
-            .survey-stats-row { grid-template-columns: repeat(2, 1fr); }
-            .survey-charts-grid { grid-template-columns: 1fr; }
-        }
-        @media(max-width: 500px) {
-            .survey-stats-row { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-            #survey-insights { padding: 3rem 1rem; }
-        }
-
         /* ── References Section ── */
         .references-section {
             background: linear-gradient(135deg, #f8faff 0%, #eef2ff 100%);
@@ -926,10 +845,10 @@
             <li><a onclick="scrollToSection('overview')">Overview</a></li>
             <li><a onclick="scrollToSection('types')">Types</a></li>
             <li><a onclick="scrollToSection('diagnosis')">Diagnosis</a></li>
+            <li><a onclick="scrollToSection('survey-insights')"><i class="fas fa-poll" style="font-size:0.75rem;"></i> Feedback</a></li>
             <li><a onclick="scrollToSection('ai-diagnosis')">AI Analysis</a></li>
             <li><a onclick="scrollToSection('nutrition')">Nutrition</a></li>
             <li><a onclick="scrollToSection('myths')">Myths</a></li>
-            <li><a onclick="scrollToSection('survey-insights')"><i class="fas fa-chart-bar" style="font-size:0.75rem;"></i> Feedback</a></li>
         </ul>
         <div id="navAuth" style="display:flex;align-items:center;gap:0.6rem;"></div>
         <button class="nav-toggle" onclick="toggleMobileNav()"><i class="fas fa-bars"></i></button>
@@ -1186,6 +1105,483 @@
     </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════
+     SURVEY INSIGHTS DASHBOARD
+     ═══════════════════════════════════════════════════════ -->
+<section id="survey-insights" style="padding:5rem 2rem;max-width:1300px;margin:0 auto;">
+
+    <!-- Header -->
+    <div class="section-header">
+        <span class="section-tag"><i class="fas fa-poll-h"></i> LIVE USER FEEDBACK</span>
+        <h2 class="section-title">Platform Satisfaction <span class="highlight-blue">Dashboard</span></h2>
+        <p class="section-subtitle">Real responses from DiabetesAI users — automatically updated after every completed analysis</p>
+    </div>
+
+    <!-- ── Dashboard wrapper ── -->
+    <div id="si-dashboard">
+
+        <!-- ── ROW 1: KPI strip ── -->
+        <div class="si-kpi-row reveal">
+
+            <!-- Gauge: Overall Score -->
+            <div class="si-kpi si-kpi-gauge">
+                <div class="si-kpi-label"><i class="fas fa-star" style="color:#f59e0b;"></i> Overall Score</div>
+                <div class="si-gauge-wrap">
+                    <svg viewBox="0 0 120 70" class="si-gauge-svg">
+                        <defs>
+                            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%"   stop-color="#dc2626"/>
+                                <stop offset="40%"  stop-color="#f59e0b"/>
+                                <stop offset="75%"  stop-color="#34d399"/>
+                                <stop offset="100%" stop-color="#059669"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- track -->
+                        <path d="M10,65 A50,50 0 0,1 110,65" fill="none" stroke="#e2e8f0" stroke-width="10" stroke-linecap="round"/>
+                        <!-- fill -->
+                        <path id="si-gauge-fill" d="M10,65 A50,50 0 0,1 110,65" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round"
+                              stroke-dasharray="157" stroke-dashoffset="157" style="transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1);"/>
+                        <!-- needle -->
+                        <line id="si-gauge-needle" x1="60" y1="65" x2="60" y2="22"
+                              stroke="#1e40af" stroke-width="2.5" stroke-linecap="round"
+                              style="transform-origin:60px 65px;transform:rotate(-90deg);transition:transform 1.4s cubic-bezier(.4,0,.2,1);"/>
+                        <circle cx="60" cy="65" r="4" fill="#1e40af"/>
+                        <!-- labels -->
+                        <text x="8"  y="72" font-size="7" fill="#94a3b8" font-weight="600">1</text>
+                        <text x="53" y="14" font-size="7" fill="#94a3b8" font-weight="600">3</text>
+                        <text x="106" y="72" font-size="7" fill="#94a3b8" font-weight="600">5</text>
+                    </svg>
+                    <div class="si-gauge-value" id="si-gauge-val">—</div>
+                    <div class="si-gauge-sub">out of 5.0</div>
+                </div>
+            </div>
+
+            <!-- Metric cards -->
+            <div class="si-kpi si-kpi-metric" id="si-kpi-responses">
+                <div class="si-metric-top">
+                    <div class="si-metric-icon" style="background:linear-gradient(135deg,#2563eb,#60a5fa);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="si-metric-trend" id="si-trend-responses"></div>
+                </div>
+                <div class="si-metric-val" id="si-val-responses">—</div>
+                <div class="si-metric-label">Total Responses</div>
+                <div class="si-metric-bar-wrap"><div class="si-metric-bar" id="si-bar-responses" style="background:linear-gradient(90deg,#2563eb,#60a5fa);"></div></div>
+            </div>
+
+            <div class="si-kpi si-kpi-metric" id="si-kpi-sat">
+                <div class="si-metric-top">
+                    <div class="si-metric-icon" style="background:linear-gradient(135deg,#059669,#10b981);">
+                        <i class="fas fa-face-smile"></i>
+                    </div>
+                    <div class="si-metric-trend" id="si-trend-sat"></div>
+                </div>
+                <div class="si-metric-val" id="si-val-sat">—</div>
+                <div class="si-metric-label">Satisfaction Rate</div>
+                <div class="si-metric-bar-wrap"><div class="si-metric-bar" id="si-bar-sat" style="background:linear-gradient(90deg,#059669,#10b981);"></div></div>
+            </div>
+
+            <div class="si-kpi si-kpi-metric" id="si-kpi-top">
+                <div class="si-metric-top">
+                    <div class="si-metric-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                </div>
+                <div class="si-metric-val" id="si-val-top" style="font-size:1rem;line-height:1.3;margin-top:0.3rem;">—</div>
+                <div class="si-metric-label">Highest Rated</div>
+                <div class="si-metric-bar-wrap"><div class="si-metric-bar" id="si-bar-top" style="background:linear-gradient(90deg,#7c3aed,#a78bfa);"></div></div>
+            </div>
+
+            <div class="si-kpi si-kpi-metric" id="si-kpi-low">
+                <div class="si-metric-top">
+                    <div class="si-metric-icon" style="background:linear-gradient(135deg,#ea580c,#f97316);">
+                        <i class="fas fa-wrench"></i>
+                    </div>
+                </div>
+                <div class="si-metric-val" id="si-val-low" style="font-size:1rem;line-height:1.3;margin-top:0.3rem;">—</div>
+                <div class="si-metric-label">Needs Improvement</div>
+                <div class="si-metric-bar-wrap"><div class="si-metric-bar" id="si-bar-low" style="background:linear-gradient(90deg,#ea580c,#f97316);"></div></div>
+            </div>
+
+        </div><!-- /kpi-row -->
+
+        <!-- ── ROW 2: Horizontal bar + Donut ── -->
+        <div class="si-row2 reveal">
+
+            <!-- Horizontal bar: per-question scores -->
+            <div class="si-panel si-panel-hbar">
+                <div class="si-panel-header">
+                    <div class="si-panel-icon" style="background:linear-gradient(135deg,#2563eb,#3b82f6);">
+                        <i class="fas fa-bars-progress"></i>
+                    </div>
+                    <div>
+                        <div class="si-panel-title">Score per Question</div>
+                        <div class="si-panel-sub">Average rating (1 = Strongly Disagree → 5 = Strongly Agree)</div>
+                    </div>
+                    <div class="si-scale-legend">
+                        <span class="si-sl-dot" style="background:#dc2626;"></span>Low
+                        <span class="si-sl-dot" style="background:#f59e0b;margin-left:6px;"></span>Mid
+                        <span class="si-sl-dot" style="background:#059669;margin-left:6px;"></span>High
+                    </div>
+                </div>
+                <div id="si-hbars" class="si-hbar-list"></div>
+            </div>
+
+            <!-- Right column: Donut + Rating pills -->
+            <div class="si-col-right">
+
+                <!-- Donut -->
+                <div class="si-panel si-panel-donut">
+                    <div class="si-panel-header">
+                        <div class="si-panel-icon" style="background:linear-gradient(135deg,#059669,#10b981);">
+                            <i class="fas fa-circle-half-stroke"></i>
+                        </div>
+                        <div>
+                            <div class="si-panel-title">Rating Split</div>
+                            <div class="si-panel-sub">All answers combined</div>
+                        </div>
+                    </div>
+                    <div class="si-donut-wrap">
+                        <div style="position:relative;width:160px;height:160px;flex-shrink:0;">
+                            <canvas id="si-donut-canvas" width="160" height="160"></canvas>
+                            <div class="si-donut-center">
+                                <div id="si-donut-center-pct">—</div>
+                                <div style="font-size:0.62rem;color:#64748b;font-weight:600;">Positive</div>
+                            </div>
+                        </div>
+                        <div id="si-donut-pills" class="si-donut-pills"></div>
+                    </div>
+                </div>
+
+                <!-- Radar mini -->
+                <div class="si-panel si-panel-radar">
+                    <div class="si-panel-header">
+                        <div class="si-panel-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">
+                            <i class="fas fa-chart-area"></i>
+                        </div>
+                        <div>
+                            <div class="si-panel-title">Coverage Radar</div>
+                            <div class="si-panel-sub">All 10 dimensions at a glance</div>
+                        </div>
+                    </div>
+                    <div style="position:relative;height:200px;">
+                        <canvas id="si-radar-canvas"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- /row2 -->
+
+    </div><!-- /dashboard -->
+
+    <!-- Empty state -->
+    <div id="survey-empty" style="display:none;text-align:center;padding:4rem 1rem;">
+        <div style="width:80px;height:80px;background:linear-gradient(135deg,#eff6ff,#e0e7ff);border-radius:24px;margin:0 auto 1.5rem;display:flex;align-items:center;justify-content:center;font-size:2rem;">📋</div>
+        <h4 style="color:var(--heading);margin-bottom:0.5rem;font-size:1.2rem;">No Survey Data Yet</h4>
+        <p style="color:var(--text-light);font-size:0.9rem;max-width:320px;margin:0 auto 1.5rem;">Complete your first AI analysis, then fill out the quick survey — your response will appear here live.</p>
+        <button class="btn-primary" onclick="document.getElementById('ai-diagnosis').scrollIntoView({behavior:'smooth'})">
+            <i class="fas fa-play"></i> Start My Analysis
+        </button>
+    </div>
+
+</section>
+
+<!-- ══ Survey Dashboard Styles ══════════════════════════════════ -->
+<style>
+/* KPI strip */
+.si-kpi-row {
+    display: grid;
+    grid-template-columns: 220px repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+.si-kpi {
+    background: #fff;
+    border: 1px solid rgba(37,99,235,0.1);
+    border-radius: 20px;
+    padding: 1.2rem 1.4rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+}
+.si-kpi:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.25); }
+
+/* Gauge card */
+.si-kpi-gauge { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+.si-kpi-label { font-size: 0.72rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.8px; }
+.si-gauge-wrap { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.si-gauge-svg  { width: 100%; max-width: 140px; }
+.si-gauge-value { font-size: 2rem; font-weight: 900; color: var(--heading); margin-top: -8px; line-height: 1; }
+.si-gauge-sub   { font-size: 0.68rem; color: var(--text-light); font-weight: 600; }
+
+/* Metric card */
+.si-kpi-metric { display: flex; flex-direction: column; }
+.si-metric-top  { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem; }
+.si-metric-icon { width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.95rem; flex-shrink: 0; }
+.si-metric-trend { font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.5rem; border-radius: 20px; }
+.si-metric-val   { font-size: 1.65rem; font-weight: 900; color: var(--heading); line-height: 1.1; }
+.si-metric-label { font-size: 0.68rem; color: var(--text-light); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.25rem; margin-bottom: 0.7rem; flex: 1; }
+.si-metric-bar-wrap { height: 5px; background: #f1f5f9; border-radius: 10px; overflow: hidden; margin-top: auto; }
+.si-metric-bar { height: 100%; border-radius: 10px; width: 0%; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+
+/* Row 2 */
+.si-row2 {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1rem;
+}
+.si-panel {
+    background: #fff;
+    border: 1px solid rgba(37,99,235,0.1);
+    border-radius: 20px;
+    padding: 1.4rem 1.6rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.si-col-right { display: flex; flex-direction: column; gap: 1rem; }
+.si-panel-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+.si-panel-icon   { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem; flex-shrink: 0; }
+.si-panel-title  { font-size: 0.9rem; font-weight: 700; color: var(--heading); }
+.si-panel-sub    { font-size: 0.7rem; color: var(--text-light); }
+.si-scale-legend { display: flex; align-items: center; gap: 4px; font-size: 0.65rem; color: var(--text-light); font-weight: 600; margin-left: auto; }
+.si-sl-dot       { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+/* Horizontal bars */
+.si-hbar-list { display: flex; flex-direction: column; gap: 0.7rem; }
+.si-hbar-row  { display: flex; align-items: center; gap: 0.75rem; }
+.si-hbar-label { font-size: 0.72rem; font-weight: 600; color: var(--text); width: 160px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.si-hbar-track { flex: 1; height: 10px; background: #f1f5f9; border-radius: 10px; overflow: hidden; position: relative; }
+.si-hbar-fill  { height: 100%; border-radius: 10px; width: 0%; transition: width 1.3s cubic-bezier(.4,0,.2,1); position: relative; }
+.si-hbar-fill::after { content: ''; position: absolute; top: 0; right: 0; width: 30%; height: 100%; background: rgba(255,255,255,0.25); border-radius: 10px; }
+.si-hbar-score { font-size: 0.72rem; font-weight: 800; color: var(--heading); width: 28px; text-align: right; flex-shrink: 0; }
+.si-hbar-stars { font-size: 0.6rem; width: 50px; flex-shrink: 0; color: #f59e0b; letter-spacing: -1px; }
+
+/* Donut */
+.si-donut-wrap  { display: flex; align-items: center; gap: 1rem; }
+.si-donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+#si-donut-center-pct { font-size: 1.3rem; font-weight: 900; color: var(--heading); line-height: 1; }
+.si-donut-pills { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+.si-d-pill { display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; }
+.si-d-pill-bar { flex: 1; height: 6px; background: #f1f5f9; border-radius: 6px; overflow: hidden; }
+.si-d-pill-fill { height: 100%; border-radius: 6px; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+.si-d-pill-label { width: 80px; font-weight: 600; color: var(--text); font-size: 0.67rem; }
+.si-d-pill-pct   { width: 28px; text-align: right; font-weight: 700; color: var(--heading); }
+
+@media (max-width: 1024px) {
+    .si-kpi-row { grid-template-columns: 1fr 1fr; }
+    .si-kpi-gauge { grid-column: 1 / -1; flex-direction: row; justify-content: center; gap: 2rem; padding: 1rem 2rem; }
+    .si-gauge-svg { max-width: 120px; }
+}
+@media (max-width: 768px) {
+    .si-row2 { grid-template-columns: 1fr; }
+    .si-kpi-row { grid-template-columns: 1fr 1fr; }
+    .si-hbar-label { width: 100px; }
+}
+@media (max-width: 480px) {
+    .si-kpi-row { grid-template-columns: 1fr; }
+}
+</style>
+
+<!-- ══ Survey Dashboard Script ═══════════════════════════════════ -->
+<script>
+(function () {
+    const RC = { 5:'#059669', 4:'#34d399', 3:'#f59e0b', 2:'#f97316', 1:'#dc2626' };
+    const RL = { 5:'Strongly Agree', 4:'Agree', 3:'Neutral', 2:'Disagree', 1:'Strongly Disagree' };
+    let siDonut = null, siRadar = null;
+
+    function scoreColor(v) {
+        if (v >= 4.5) return '#059669';
+        if (v >= 3.8) return '#34d399';
+        if (v >= 3.0) return '#f59e0b';
+        if (v >= 2.0) return '#f97316';
+        return '#dc2626';
+    }
+    function starsHtml(avg) {
+        let s = '';
+        for (let i = 1; i <= 5; i++) {
+            if (avg >= i) s += '★';
+            else if (avg >= i - 0.5) s += '½';
+            else s += '☆';
+        }
+        return s;
+    }
+    function trendBadge(val, max) {
+        const pct = Math.round(val / max * 100);
+        if (pct >= 75) return `<span class="si-metric-trend" style="background:#ecfdf5;color:#059669;">▲ Great</span>`;
+        if (pct >= 50) return `<span class="si-metric-trend" style="background:#fffbeb;color:#d97706;">● Good</span>`;
+        return `<span class="si-metric-trend" style="background:#fff7ed;color:#ea580c;">▼ Fair</span>`;
+    }
+
+    async function load() {
+        try {
+            const r = await fetch('/api/survey-stats');
+            const d = await r.json();
+
+            if (!d.total) {
+                document.getElementById('survey-empty').style.display = 'block';
+                document.getElementById('si-dashboard').style.display = 'none';
+                return;
+            }
+
+            fillGauge(d.overall_avg);
+            fillMetrics(d);
+            fillHBars(d.per_question);
+            fillDonut(d.distribution);
+            fillRadar(d.per_question);
+
+        } catch (e) { console.warn('Survey dashboard error:', e); }
+    }
+
+    /* ── Gauge ── */
+    function fillGauge(avg) {
+        document.getElementById('si-gauge-val').textContent = avg.toFixed(1);
+        const pct   = (avg - 1) / 4;          // 1→0, 5→1
+        const arc   = 157;                     // total arc px (π × r ≈ 157 for r=50)
+        const offset = arc - pct * arc;
+        const deg    = -90 + pct * 180;        // -90° (left) → +90° (right)
+        setTimeout(() => {
+            document.getElementById('si-gauge-fill').style.strokeDashoffset = offset;
+            document.getElementById('si-gauge-needle').style.transform = `rotate(${deg}deg)`;
+        }, 200);
+    }
+
+    /* ── Metric cards ── */
+    function fillMetrics(d) {
+        // responses
+        document.getElementById('si-val-responses').textContent = d.total;
+        document.getElementById('si-trend-responses').innerHTML  = trendBadge(d.total, 50);
+        animBar('si-bar-responses', Math.min(d.total / 50, 1) * 100);
+
+        // satisfaction
+        const sat = Math.round(d.per_question.filter(q => q.avg >= 4).length / d.per_question.length * 100);
+        document.getElementById('si-val-sat').textContent = sat + '%';
+        document.getElementById('si-trend-sat').innerHTML  = trendBadge(sat, 100);
+        animBar('si-bar-sat', sat);
+
+        // top
+        const top = d.per_question.reduce((a, b) => a.avg > b.avg ? a : b);
+        document.getElementById('si-val-top').textContent = top.question;
+        animBar('si-bar-top', (top.avg / 5) * 100);
+
+        // lowest
+        const low = d.per_question.reduce((a, b) => a.avg < b.avg ? a : b);
+        document.getElementById('si-val-low').textContent = low.question;
+        animBar('si-bar-low', (low.avg / 5) * 100);
+    }
+
+    function animBar(id, pct) {
+        setTimeout(() => { document.getElementById(id).style.width = pct + '%'; }, 300);
+    }
+
+    /* ── Horizontal bars ── */
+    function fillHBars(perQ) {
+        const container = document.getElementById('si-hbars');
+        container.innerHTML = perQ.map((q, i) => {
+            const fillPct = (q.avg / 5) * 100;
+            const col     = scoreColor(q.avg);
+            return `
+            <div class="si-hbar-row">
+                <div class="si-hbar-label" title="${q.question}">
+                    <span style="color:#94a3b8;font-size:0.65rem;font-weight:700;margin-right:4px;">Q${i+1}</span>${q.question}
+                </div>
+                <div class="si-hbar-track">
+                    <div class="si-hbar-fill" data-w="${fillPct}" style="background:linear-gradient(90deg,${col}99,${col});"></div>
+                </div>
+                <div class="si-hbar-stars" style="color:${col};">${starsHtml(q.avg)}</div>
+                <div class="si-hbar-score" style="color:${col};">${q.avg.toFixed(1)}</div>
+            </div>`;
+        }).join('');
+        // animate
+        setTimeout(() => {
+            container.querySelectorAll('.si-hbar-fill').forEach(el => {
+                el.style.width = el.dataset.w + '%';
+            });
+        }, 350);
+    }
+
+    /* ── Donut ── */
+    function fillDonut(dist) {
+        const keys   = [5, 4, 3, 2, 1];
+        const vals   = keys.map(k => dist[k] || 0);
+        const total  = vals.reduce((a, b) => a + b, 0);
+        const positivePct = total
+            ? Math.round(((dist[5]||0) + (dist[4]||0)) / total * 100) : 0;
+
+        document.getElementById('si-donut-center-pct').textContent = positivePct + '%';
+
+        const ctx = document.getElementById('si-donut-canvas').getContext('2d');
+        if (siDonut) siDonut.destroy();
+        siDonut = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: keys.map(k => RL[k]),
+                datasets: [{ data: vals, backgroundColor: keys.map(k => RC[k]),
+                             borderColor: '#fff', borderWidth: 3, hoverOffset: 6 }]
+            },
+            options: {
+                responsive: false, cutout: '68%',
+                plugins: { legend: { display: false },
+                    tooltip: { callbacks: { label: c => ` ${c.label}: ${c.raw} (${total?Math.round(c.raw/total*100):0}%)` }}}
+            }
+        });
+
+        // pills
+        const pills = document.getElementById('si-donut-pills');
+        pills.innerHTML = keys.map((k, i) => {
+            const pct = total ? Math.round(vals[i] / total * 100) : 0;
+            return `<div class="si-d-pill">
+                <div class="si-d-pill-label" style="color:${RC[k]};font-weight:700;">${k}★ ${RL[k].split(' ')[0]}</div>
+                <div class="si-d-pill-bar"><div class="si-d-pill-fill" data-w="${pct}" style="background:${RC[k]};"></div></div>
+                <div class="si-d-pill-pct">${pct}%</div>
+            </div>`;
+        }).join('');
+        setTimeout(() => {
+            pills.querySelectorAll('.si-d-pill-fill').forEach(el => { el.style.width = el.dataset.w + '%'; });
+        }, 400);
+    }
+
+    /* ── Radar ── */
+    function fillRadar(perQ) {
+        const labels = perQ.map(q => q.question);
+        const values = perQ.map(q => q.avg);
+        const ctx = document.getElementById('si-radar-canvas').getContext('2d');
+        if (siRadar) siRadar.destroy();
+        siRadar = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: 'rgba(124,58,237,0.12)',
+                    borderColor: '#7c3aed',
+                    borderWidth: 2,
+                    pointBackgroundColor: values.map(scoreColor),
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        min: 0, max: 5, ticks: { stepSize: 1, display: false },
+                        grid: { color: 'rgba(124,58,237,0.1)' },
+                        angleLines: { color: 'rgba(124,58,237,0.1)' },
+                        pointLabels: { font: { size: 9, weight: '600' }, color: '#64748b' },
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: c => ` ${c.raw.toFixed(2)} / 5` }}
+                }
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
+    else load();
+})();
+</script>
+
 <!-- AI Diagnosis Section -->
 <section id="ai-diagnosis">
     <div class="section-header">
@@ -1422,126 +1818,6 @@
             <p>Cortisol from stress directly increases blood glucose levels.</p>
         </div>
     </div>
-</section>
-
-<!-- Survey Insights Section -->
-<section id="survey-insights">
-    <div class="section-header">
-        <span class="section-tag"><i class="fas fa-chart-bar"></i> COMMUNITY FEEDBACK</span>
-        <h2 class="section-title">What <span class="highlight-blue">Users Say</span></h2>
-        <p class="section-subtitle">Live satisfaction data from real DiabetesAI users — updates with every new survey submission</p>
-    </div>
-
-    <!-- Loading state -->
-    <div id="surveyLoading" style="text-align:center;padding:3rem;color:var(--text-light);">
-        <div style="width:56px;height:56px;border:3px solid #e0e7ff;border-top-color:#2563eb;border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 1rem;"></div>
-        <p style="font-size:0.88rem;color:#5a6e8a;">Loading community feedback...</p>
-    </div>
-
-    <!-- No data state -->
-    <div id="surveyNoData" style="display:none;text-align:center;padding:3rem 2rem;max-width:520px;margin:0 auto;">
-        <div style="width:80px;height:80px;background:linear-gradient(135deg,#eff6ff,#e0e7ff);border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;border:1px solid #c7d2fe;">
-            <i class="fas fa-clipboard-list" style="font-size:2rem;color:#2563eb;"></i>
-        </div>
-        <h3 style="font-size:1.1rem;font-weight:700;color:#0a1c3a;margin-bottom:0.6rem;">No Feedback Yet</h3>
-        <p style="color:#5a6e8a;font-size:0.88rem;line-height:1.6;margin-bottom:1.5rem;">
-            Be the first to share your experience with DiabetesAI!<br>
-            Charts will appear here once users submit their surveys.
-        </p>
-        <a href="/survey" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.6rem;background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;border-radius:14px;text-decoration:none;font-weight:600;font-size:0.88rem;box-shadow:0 4px 15px rgba(37,99,235,0.3);">
-            <i class="fas fa-paper-plane"></i> Take the Survey
-        </a>
-    </div>
-
-    <!-- Main dashboard -->
-    <div id="surveyDashboard" style="display:none;">
-
-        <!-- Header stats row -->
-        <div class="survey-stats-row reveal">
-            <div class="survey-kpi-card">
-                <div class="survey-kpi-icon" style="background:linear-gradient(135deg,#2563eb,#1e40af);">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="survey-kpi-value" id="siTotal">—</div>
-                <div class="survey-kpi-label">Total Responses</div>
-            </div>
-            <div class="survey-kpi-card">
-                <div class="survey-kpi-icon" style="background:linear-gradient(135deg,#059669,#047857);">
-                    <i class="fas fa-star"></i>
-                </div>
-                <div class="survey-kpi-value" id="siOverall">—</div>
-                <div class="survey-kpi-label">Overall Score / 5</div>
-            </div>
-            <div class="survey-kpi-card">
-                <div class="survey-kpi-icon" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);">
-                    <i class="fas fa-smile"></i>
-                </div>
-                <div class="survey-kpi-value" id="siSatisfied">—</div>
-                <div class="survey-kpi-label">Strongly Agree Rate</div>
-            </div>
-            <div class="survey-kpi-card">
-                <div class="survey-kpi-icon" style="background:linear-gradient(135deg,#d97706,#b45309);">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="survey-kpi-value" id="siPct">—</div>
-                <div class="survey-kpi-label">Satisfaction %</div>
-            </div>
-        </div>
-
-        <!-- Charts row -->
-        <div class="survey-charts-grid reveal">
-
-            <!-- Radar chart — per question averages -->
-            <div class="survey-chart-card">
-                <div class="survey-chart-title">
-                    <i class="fas fa-spider" style="color:var(--primary);"></i>
-                    Per-Question Average Score
-                </div>
-                <div style="position:relative;max-width:340px;margin:0 auto;">
-                    <canvas id="siRadarChart"></canvas>
-                </div>
-                <p class="survey-chart-note">Each axis = one survey question (1–5 scale). Outer = better.</p>
-            </div>
-
-            <!-- Donut chart — overall response distribution -->
-            <div class="survey-chart-card">
-                <div class="survey-chart-title">
-                    <i class="fas fa-chart-pie" style="color:var(--green);"></i>
-                    Overall Answer Distribution
-                </div>
-                <div style="position:relative;max-width:280px;margin:0 auto;">
-                    <canvas id="siDonutChart"></canvas>
-                </div>
-                <!-- Custom legend -->
-                <div class="si-donut-legend">
-                    <div class="si-legend-item"><span style="background:#059669;"></span> 5 — Strongly Agree</div>
-                    <div class="si-legend-item"><span style="background:#34d399;"></span> 4 — Agree</div>
-                    <div class="si-legend-item"><span style="background:#f59e0b;"></span> 3 — Neutral</div>
-                    <div class="si-legend-item"><span style="background:#f97316;"></span> 2 — Disagree</div>
-                    <div class="si-legend-item"><span style="background:#dc2626;"></span> 1 — Strongly Disagree</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Horizontal stacked bar — per question breakdown -->
-        <div class="survey-chart-card survey-bar-card reveal">
-            <div class="survey-chart-title">
-                <i class="fas fa-bars" style="color:var(--purple);"></i>
-                Response Breakdown by Question
-                <span style="font-size:0.75rem;font-weight:500;color:var(--text-light);margin-left:0.5rem;">(% of users per answer)</span>
-            </div>
-            <div id="siStackedBars" style="display:flex;flex-direction:column;gap:0.75rem;margin-top:1rem;"></div>
-            <!-- Legend -->
-            <div class="si-donut-legend" style="margin-top:1.2rem;">
-                <div class="si-legend-item"><span style="background:#059669;"></span> Strongly Agree</div>
-                <div class="si-legend-item"><span style="background:#34d399;"></span> Agree</div>
-                <div class="si-legend-item"><span style="background:#f59e0b;"></span> Neutral</div>
-                <div class="si-legend-item"><span style="background:#f97316;"></span> Disagree</div>
-                <div class="si-legend-item"><span style="background:#dc2626;"></span> Strongly Disagree</div>
-            </div>
-        </div>
-
-    </div><!-- /surveyDashboard -->
 </section>
 
 <!-- References Section -->
@@ -2327,151 +2603,7 @@
     }
     checkAuthState();
 
-    // ── Survey Insights Charts ────────────────────────────────────────────────
-    const Q_LABELS = [
-        'Q1 Navigation','Q2 AI Results','Q3 Recommendations',
-        'Q4 Medical Info','Q5 Data Entry','Q6 Interface',
-        'Q7 Performance','Q8 Reliability','Q9 Privacy','Q10 Overall'
-    ];
-    const OPTION_COLORS = ['#059669','#34d399','#f59e0b','#f97316','#dc2626'];
-    const OPTION_LABELS = ['Strongly Agree','Agree','Neutral','Disagree','Strongly Disagree'];
-
-    let siRadar = null, siDonut = null;
-
-    async function loadSurveyInsights() {
-        try {
-            const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), 5000);
-            let res, data;
-            try {
-                res  = await fetch('/api/survey-stats', { signal: controller.signal });
-                data = await res.json();
-            } catch(fetchErr) {
-                // fetch failed or timed out — show no-data gracefully
-                document.getElementById('surveyLoading').style.display = 'none';
-                document.getElementById('surveyNoData').style.display  = 'block';
-                return;
-            } finally {
-                clearTimeout(timer);
-            }
-
-            document.getElementById('surveyLoading').style.display = 'none';
-
-            if (!data.has_data || data.total === 0) {
-                document.getElementById('surveyNoData').style.display = 'block';
-                return;
-            }
-
-            document.getElementById('surveyDashboard').style.display = 'block';
-
-            // KPI cards
-            document.getElementById('siTotal').textContent    = data.total;
-            document.getElementById('siOverall').textContent  = data.overall_avg.toFixed(2);
-            const stronglyAgreePct = data.dist_pct['5'] || 0;
-            document.getElementById('siSatisfied').textContent = stronglyAgreePct + '%';
-            // satisfaction % = avg/5 * 100
-            const satisfactionPct = Math.round((data.overall_avg / 5) * 100);
-            document.getElementById('siPct').textContent = satisfactionPct + '%';
-
-            // Radar chart — per question averages
-            const radarCtx = document.getElementById('siRadarChart').getContext('2d');
-            if (siRadar) siRadar.destroy();
-            siRadar = new Chart(radarCtx, {
-                type: 'radar',
-                data: {
-                    labels: Q_LABELS,
-                    datasets: [{
-                        label: 'Avg Score',
-                        data: data.q_avgs,
-                        backgroundColor: 'rgba(37,99,235,0.15)',
-                        borderColor: '#2563eb',
-                        borderWidth: 2,
-                        pointBackgroundColor: '#2563eb',
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        r: {
-                            min: 0, max: 5,
-                            ticks: { stepSize: 1, font: { size: 10 }, color: '#94a3b8', backdropColor: 'transparent' },
-                            pointLabels: { font: { size: 10, weight: '600' }, color: '#334155' },
-                            grid: { color: 'rgba(37,99,235,0.1)' },
-                            angleLines: { color: 'rgba(37,99,235,0.1)' },
-                        }
-                    },
-                    plugins: { legend: { display: false } },
-                    animation: { duration: 1200, easing: 'easeOutQuart' }
-                }
-            });
-
-            // Donut chart — overall distribution
-            const donutCtx = document.getElementById('siDonutChart').getContext('2d');
-            if (siDonut) siDonut.destroy();
-            const distVals = ['5','4','3','2','1'].map(k => data.dist_pct[k] || 0);
-            siDonut = new Chart(donutCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: OPTION_LABELS,
-                    datasets: [{
-                        data: distVals,
-                        backgroundColor: OPTION_COLORS,
-                        borderColor: '#fff',
-                        borderWidth: 3,
-                        hoverOffset: 10,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    cutout: '62%',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: 'rgba(255,255,255,0.97)',
-                            titleColor: '#0a1c3a', bodyColor: '#334155',
-                            borderColor: '#e0e7ff', borderWidth: 1,
-                            callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}%` }
-                        }
-                    },
-                    animation: { animateRotate: true, duration: 1400, easing: 'easeOutBounce' }
-                }
-            });
-
-            // Stacked bars — per question breakdown
-            const barsEl = document.getElementById('siStackedBars');
-            barsEl.innerHTML = '';
-            for (let i = 1; i <= 10; i++) {
-                const qKey  = `q${i}`;
-                const qDist = data.q_dist[qKey];
-                const avg   = data.q_avgs[i - 1];
-                const segs  = ['5','4','3','2','1'].map((v, vi) => {
-                    const pct = qDist[v] || 0;
-                    if (pct === 0) return '';
-                    return `<div class="si-bar-seg"
-                        style="width:${pct}%;background:${OPTION_COLORS[vi]};"
-                        data-tip="${OPTION_LABELS[vi]}: ${pct}%"></div>`;
-                }).join('');
-                barsEl.innerHTML += `
-                    <div class="si-bar-row">
-                        <div class="si-bar-label">Q${i}</div>
-                        <div class="si-bar-track">${segs}</div>
-                        <div class="si-bar-avg">${avg}</div>
-                    </div>`;
-            }
-
-        } catch(e) {
-            document.getElementById('surveyLoading').style.display = 'none';
-            document.getElementById('surveyNoData').style.display = 'block';
-            console.log('Survey stats load failed:', e);
-        }
-    }
-
-    // Load on page ready, and auto-refresh every 60 seconds
-    loadSurveyInsights();
-    setInterval(loadSurveyInsights, 60000);
-
+    function toggleFaqPanel() {
         const body    = document.getElementById('faq-panel-body');
         const chevron = document.getElementById('faq-panel-chevron');
         const isOpen  = body.style.maxHeight && body.style.maxHeight !== '0px';
