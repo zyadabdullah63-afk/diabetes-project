@@ -711,6 +711,47 @@ def survey_results():
     })
 
 
+@app.route('/api/survey-stats')
+def api_survey_stats():
+    """Public endpoint — aggregated survey statistics for homepage chart."""
+    conn = get_db()
+    rows = conn.execute('SELECT q1,q2,q3,q4,q5,q6,q7,q8,q9,q10,avg_score FROM surveys').fetchall()
+    total = len(rows)
+    if total == 0:
+        conn.close()
+        return jsonify({'total': 0, 'has_data': False})
+
+    # Per-question average (1–5 scale)
+    q_avgs = [round(sum(r[f'q{i}'] for r in rows) / total, 2) for i in range(1, 11)]
+
+    # Distribution of each answer option (1–5) across ALL questions combined
+    dist = {str(v): 0 for v in range(1, 6)}
+    for r in rows:
+        for i in range(1, 11):
+            dist[str(r[f'q{i}'])] += 1
+    total_answers = total * 10
+    dist_pct = {k: round(v / total_answers * 100, 1) for k, v in dist.items()}
+
+    # Per-question distribution (how many chose each of the 5 options)
+    q_dist = {}
+    for i in range(1, 11):
+        counts = {str(v): 0 for v in range(1, 6)}
+        for r in rows:
+            counts[str(r[f'q{i}'])] += 1
+        q_dist[f'q{i}'] = {k: round(v / total * 100, 1) for k, v in counts.items()}
+
+    overall = round(sum(r['avg_score'] for r in rows) / total, 2)
+    conn.close()
+    return jsonify({
+        'has_data': True,
+        'total': total,
+        'overall_avg': overall,
+        'q_avgs': q_avgs,
+        'dist_pct': dist_pct,
+        'q_dist': q_dist,
+    })
+
+
 # ─── Ollama Chatbot Route ─────────────────────────────────────────────────────
 @app.route('/chat', methods=['POST'])
 def chat():
