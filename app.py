@@ -20,6 +20,15 @@ BASE_DIR   = os.path.dirname(__file__)
 MODEL_PATH = os.path.join(BASE_DIR, 'model.pkl')
 CSV_PATH   = os.path.join(BASE_DIR, 'Personalized_Diet_Recommendations.csv')
 DB_PATH    = os.path.join(BASE_DIR, 'database.db')
+#---------------------------------------------------------------------------------------------
+# تعريف الدالة المفقودة التي يبحث عنها الموديل
+def loss(*args, **kwargs):
+    return None
+
+# ثم تأكد من جعلها متاحة في النطاق الذي يتوقعه الموديل
+import sys
+# احيانا يحتاج الموديل ان يجد الدالة في الـ module الخاص بالموديل
+sys.modules['loss'] = sys.modules[__name__] # هذا السطر لجعل الكود الحالي يعامل كـ module باسم loss
 
 # ─── Load Model & CSV ─────────────────────────────────────────────────────────
 model   = joblib.load(MODEL_PATH)
