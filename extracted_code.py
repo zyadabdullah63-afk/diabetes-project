@@ -139,7 +139,7 @@ pipeline = Pipeline([
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 cv_scores = cross_val_score(pipeline, X, y, cv=cv, scoring='accuracy')
 print(f"\nCross-Validation Accuracy: {cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
-print(f"Per-fold scores: {np.round(cv_scores, 4)}")
+print(f"Pٍer-fold scores: {np.round(cv_scores, 4)}")
 
 # ─────────────────────────────────────────────
 # 7. TRAIN FINAL MODEL
